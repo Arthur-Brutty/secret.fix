@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace SecretFix.Services;
 
 public sealed class AppLogService
