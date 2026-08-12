@@ -12,6 +12,10 @@
             <StackPanel>
                 <TextBlock Text="Mouse" Style="{StaticResource H1TextStyle}"/>
                 <TextBlock Text="Configuração avançada de precisão e resposta" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                    <TextBlock x:Name="DetectedMouseText" Text="Deteccao: aguardando..." Foreground="{StaticResource MutedBrush}" FontSize="12" VerticalAlignment="Center"/>
+                    <Button Content="DETECTAR NOVAMENTE" Style="{StaticResource SecondaryButtonStyle}" Height="30" Padding="12,4" Margin="14,0,0,0" Click="DetectAgain_Click"/>
+                </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
@@ -32,7 +36,7 @@
                 <CheckBox x:Name="Tracking" Content="TRACKING" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
                 <CheckBox x:Name="Sensi" Content="SENSI" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
                 <CheckBox x:Name="Flick" Content="FLICK" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox x:Name="HalfMs" Content="0.5MS" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox x:Name="HalfMs" Content="0.5MS EXPERIMENTAL" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
             </StackPanel>
 
             <Grid Grid.Column="1">
@@ -78,14 +82,14 @@
                         <Button x:Name="MouseLogitech" Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/logitech-g-pro-x.png|Logitech|G Pro X Superlight 2" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/logitech-g-pro-x.png|Logitech|G Pro X Superlight" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/razer-viper-v3.png|Razer|Viper V3 Pro" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/razer-viper-v3.png|Razer|DeathAdder V3" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/asus-rog-harpe.png|Logitech|G502 X" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Razer|DeathAdder V3" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Logitech|G502 X" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/finalmouse-ultralightx.png|Finalmouse|Starlight" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/zowie-ec2cw.png|Zowie|FK2" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/lamzu-atlantis.png|Lamzu|Atlantis" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/lamzu-atlantis.png|Pulsar|X2H" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/asus-rog-harpe.png|Attack Shark|X3" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/hero-logitech-g.png|secret.fix|Generic" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Pulsar|X2H" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Attack Shark|X3" Click="Device_Click"/>
+                        <Button x:Name="MouseGeneric" Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|secret.fix|Generic" Click="Device_Click"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

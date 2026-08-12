@@ -23,6 +23,8 @@
                     <TextBlock x:Name="UsernameText" FontSize="24" FontWeight="SemiBold" Margin="0,18,0,0"/>
                     <TextBlock x:Name="StatusText" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" Margin="0,6,0,0"/>
                     <Button Content="VIEW PLANS" Style="{StaticResource PrimaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,26,0,0"/>
+                    <Button Content="TELA CHEIA" Style="{StaticResource SecondaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,10,0,0" Click="Fullscreen_Click"/>
+                    <Button Content="SAIR DA CONTA" Style="{StaticResource SecondaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,10,0,0" Click="SignOut_Click"/>
                 </StackPanel>
                 <UniformGrid Grid.Column="1" Columns="2">
                     <StackPanel Margin="0,0,20,20"><TextBlock Text="License" Foreground="{StaticResource MutedBrush}" FontSize="11"/><TextBlock x:Name="LicenseText" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel>

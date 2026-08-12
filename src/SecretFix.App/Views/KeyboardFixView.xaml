@@ -12,6 +12,10 @@
             <StackPanel>
                 <TextBlock Text="Teclado" Style="{StaticResource H1TextStyle}"/>
                 <TextBlock Text="Configuração avançada de precisão e resposta" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                    <TextBlock x:Name="DetectedKeyboardText" Text="Deteccao: aguardando..." Foreground="{StaticResource MutedBrush}" FontSize="12" VerticalAlignment="Center"/>
+                    <Button Content="DETECTAR NOVAMENTE" Style="{StaticResource SecondaryButtonStyle}" Height="30" Padding="12,4" Margin="14,0,0,0" Click="DetectAgain_Click"/>
+                </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
@@ -80,8 +84,9 @@
                         <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/redragon-fizz.png|Redragon|Fizz" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/anne-pro-2.png|Anne Pro|2" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/keychron-k2.png|Keychron|K2" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/hyperx-alloy-origins.png|SteelSeries|Apex Pro" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/redragon-fizz.png|Razer|Huntsman Mini" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Branding/secret-fix-logo.png|SteelSeries|Apex Pro" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Branding/secret-fix-logo.png|Razer|Huntsman Mini" Click="Device_Click"/>
+                        <Button x:Name="KeyboardGeneric" Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Branding/secret-fix-logo.png|secret.fix|Generic Keyboard" Click="Device_Click"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

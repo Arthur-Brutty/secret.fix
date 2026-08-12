@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $project = Join-Path $repoRoot "src/SecretFix.App/SecretFix.App.csproj"
-$version = "v0.2"
+$version = "v0.3"
 $output = Join-Path $repoRoot "artifacts/secret-fix-$version-win-x64"
 
 dotnet restore $project

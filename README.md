@@ -61,7 +61,7 @@ dotnet publish src/SecretFix.App/SecretFix.App.csproj -c Release -r win-x64 --se
 
 Ou pelo VS Code: `Terminal > Run Task... > secret.fix: publish win-x64`.
 
-O workflow do GitHub gera artifact versionado. Na versao atual, o artifact fica como `secret-fix-v0.1-win-x64` e o executavel dentro dele fica como `secret-fix-v0.1.exe`.
+O workflow do GitHub gera artifact versionado. Na versao atual, o artifact fica como `secret-fix-v0.3-win-x64` e o executavel dentro dele fica como `secret-fix-v0.3.exe`.
 
 O executável publicado localmente ou pelo CI **não deve ser commitado** no repositório. Releases devem ser anexadas à área Releases do GitHub.
 

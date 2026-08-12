@@ -12,12 +12,7 @@
         ResizeMode="CanResizeWithGrip"
         Background="Transparent"
         Foreground="{StaticResource TextBrush}">
-    <Border x:Name="WindowChrome"
-            Background="{StaticResource BgBrush}"
-            BorderBrush="{StaticResource BorderBrush}"
-            BorderThickness="1"
-            CornerRadius="10"
-            ClipToBounds="True">
+    <Border Background="{StaticResource BgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
         <Grid>
             <MediaElement x:Name="GalaxyBackground"
                           LoadedBehavior="Manual"
@@ -44,58 +39,31 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel>
-                            <TextBlock Text="secret.fix" FontSize="30" FontWeight="SemiBold">
-                                <TextBlock.Foreground>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#F4F4F6" Offset="0"/>
-                                        <GradientStop Color="#F4F4F6" Offset="0.58"/>
-                                        <GradientStop Color="#D91F2F" Offset="0.59"/>
-                                        <GradientStop Color="#F04452" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </TextBlock.Foreground>
-                            </TextBlock>
-                            <TextBlock x:Name="VersionText" Text="v0.2 test build" Style="{StaticResource CaptionTextStyle}" Margin="2,4,0,0"/>
+                            <TextBlock Text="secret.fix" FontSize="30" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}"/>
+                            <TextBlock x:Name="VersionText" Text="v0.3 test build" Style="{StaticResource CaptionTextStyle}" Margin="2,4,0,0"/>
                         </StackPanel>
 
                         <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="12" Margin="0,26,0,18">
                             <StackPanel>
                                 <DockPanel>
-                                    <TextBlock Text="PROGRESSO DA OTIMIZAÇÃO" Foreground="{StaticResource MutedBrush}" FontSize="11"/>
+                                    <TextBlock Text="PROGRESSO DA OTIMIZACAO" Foreground="{StaticResource MutedBrush}" FontSize="11"/>
                                     <TextBlock Text="25%" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
                                 </DockPanel>
                                 <ProgressBar Value="25" Margin="0,12,0,10"/>
-                                <TextBlock Text="Selecione e aplique módulos desejados." Foreground="{StaticResource MutedBrush}" FontSize="11"/>
+                                <TextBlock Text="Selecione e aplique modulos desejados." Foreground="{StaticResource MutedBrush}" FontSize="11"/>
                             </StackPanel>
                         </Border>
 
                         <StackPanel Grid.Row="2">
-                            <Button x:Name="MouseButton" Style="{StaticResource NavButtonStyle}" Tag="Mouse" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="◖" FontSize="18" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="MouseFix" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="MouseBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="KeyboardButton" Style="{StaticResource NavButtonStyle}" Tag="Keyboard" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="⌨" FontSize="16" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="TecladoFix" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="KeyboardBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="FiveMButton" Style="{StaticResource NavButtonStyle}" Tag="FiveM" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="▲" FontSize="15" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="FiveM" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="FiveMBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="FlickButton" Style="{StaticResource NavButtonStyle}" Tag="Flick" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="⊕" FontSize="18" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Flick" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="FlickBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="SensiButton" Style="{StaticResource NavButtonStyle}" Tag="Sensi" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="≋" FontSize="18" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Sensi" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="SensiBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="AimButton" Style="{StaticResource NavButtonStyle}" Tag="Aim" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="◎" FontSize="18" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Mira" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="AimBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="ServicesButton" Style="{StaticResource NavButtonStyle}" Tag="Services" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="▦" FontSize="17" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Serviços" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="ServicesBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="DisplayButton" Style="{StaticResource NavButtonStyle}" Tag="Display" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="▭" FontSize="18" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Display" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="DisplayBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid>
-                            </Button>
-                            <Button x:Name="AccountButton" Style="{StaticResource NavButtonStyle}" Tag="Account" Click="Nav_Click">
-                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="◌" FontSize="18" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Account" FontSize="15" VerticalAlignment="Center"/></Grid>
-                            </Button>
+                            <Button x:Name="MouseButton" Style="{StaticResource NavButtonStyle}" Tag="Mouse" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="M" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="MouseFix" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="MouseBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="KeyboardButton" Style="{StaticResource NavButtonStyle}" Tag="Keyboard" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="K" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="TecladoFix" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="KeyboardBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="FiveMButton" Style="{StaticResource NavButtonStyle}" Tag="FiveM" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="F" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="FiveM" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="FiveMBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="FlickButton" Style="{StaticResource NavButtonStyle}" Tag="Flick" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="+" FontSize="16" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Flick" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="FlickBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="SensiButton" Style="{StaticResource NavButtonStyle}" Tag="Sensi" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="S" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Sensi" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="SensiBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="AimButton" Style="{StaticResource NavButtonStyle}" Tag="Aim" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="O" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Mira" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="AimBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="ServicesButton" Style="{StaticResource NavButtonStyle}" Tag="Services" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="#" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Servicos" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="ServicesBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="DisplayButton" Style="{StaticResource NavButtonStyle}" Tag="Display" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="D" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Display" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="DisplayBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="AccountButton" Style="{StaticResource NavButtonStyle}" Tag="Account" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="A" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Account" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
                         </StackPanel>
 
                         <Button Grid.Row="3" Tag="Account" Click="Nav_Click" Background="#D90A0A0D" BorderBrush="{StaticResource BorderBrush}" Padding="10" HorizontalContentAlignment="Stretch">
@@ -112,10 +80,10 @@
                                     <TextBlock x:Name="UserText" Text="Secret User" FontWeight="SemiBold" FontSize="13"/>
                                     <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
                                         <TextBlock x:Name="PlanText" Text="APEX" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="Bold"/>
-                                        <TextBlock Text="  ● Active" Foreground="{StaticResource MutedBrush}" FontSize="11"/>
+                                        <TextBlock Text="  Active" Foreground="{StaticResource MutedBrush}" FontSize="11"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <TextBlock Grid.Column="2" Text="⚙" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="..." Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
                         </Button>
                     </Grid>
@@ -129,8 +97,9 @@
 
                     <Grid x:Name="DragHeader" MouseLeftButtonDown="DragHeader_MouseLeftButtonDown">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,6,12,0">
-                            <Button Style="{StaticResource WindowButtonStyle}" Content="−" Click="Minimize_Click"/>
-                            <Button x:Name="CloseButton" Style="{StaticResource WindowButtonStyle}" Content="×" Click="Close_Click"/>
+                            <Button Style="{StaticResource WindowButtonStyle}" Content="_" Click="Minimize_Click"/>
+                            <Button x:Name="MaximizeButton" Style="{StaticResource WindowButtonStyle}" Content="[]" Click="MaximizeRestore_Click"/>
+                            <Button Style="{StaticResource WindowButtonStyle}" Content="X" Click="Close_Click"/>
                         </StackPanel>
                     </Grid>
 
@@ -150,7 +119,7 @@
                         <ScaleTransform x:Name="SplashScale" ScaleX="0.96" ScaleY="0.96"/>
                     </StackPanel.RenderTransform>
                     <TextBlock Text="secret.fix" FontSize="34" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                    <TextBlock Text="v0.2 test build" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock Text="v0.3 test build" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                 </StackPanel>
             </Grid>
         </Grid>

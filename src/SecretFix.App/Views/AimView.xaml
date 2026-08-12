@@ -15,6 +15,10 @@
                 <Button Content="HIGH" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
                 <Button Content="CUSTOM" Style="{StaticResource PrimaryButtonStyle}" Click="Preset_Click"/>
             </UniformGrid>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,18">
+                <Button Content="ATIVAR MIRA" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Activate_Click"/>
+                <Button Content="DESATIVAR MIRA" Style="{StaticResource SecondaryButtonStyle}" Click="Deactivate_Click"/>
+            </StackPanel>
             <Border Style="{StaticResource CardBorderStyle}" Padding="18">
                 <StackPanel>
                     <TextBlock Text="CONTROLES" FontWeight="SemiBold" Margin="0,0,0,14"/>
@@ -22,6 +26,11 @@
                     <TextBlock Text="Thickness" Foreground="{StaticResource MutedBrush}"/><Slider x:Name="ThicknessSlider" Style="{StaticResource ThinSliderStyle}" Minimum="1" Maximum="8" Value="2" ValueChanged="Slider_ValueChanged"/>
                     <TextBlock Text="Gap" Foreground="{StaticResource MutedBrush}"/><Slider x:Name="GapSlider" Style="{StaticResource ThinSliderStyle}" Minimum="0" Maximum="30" Value="8" ValueChanged="Slider_ValueChanged"/>
                     <TextBlock Text="Opacity" Foreground="{StaticResource MutedBrush}"/><Slider x:Name="OpacitySlider" Style="{StaticResource ThinSliderStyle}" Minimum="20" Maximum="100" Value="90" ValueChanged="Slider_ValueChanged"/>
+                    <TextBlock Text="Color" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,4"/>
+                    <ComboBox x:Name="ColorBox" SelectedIndex="0" SelectionChanged="ColorBox_SelectionChanged">
+                        <ComboBoxItem Content="Red"/>
+                        <ComboBoxItem Content="White"/>
+                    </ComboBox>
                     <TextBlock Text="Smoothness" Foreground="{StaticResource MutedBrush}"/><Slider Style="{StaticResource ThinSliderStyle}" Minimum="0" Maximum="100" Value="45"/>
                 </StackPanel>
             </Border>

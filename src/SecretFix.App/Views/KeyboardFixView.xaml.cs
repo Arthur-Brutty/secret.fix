@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using SecretFix.Core;
 using SecretFix.Infrastructure.Windows;
 using SecretFix.Services;
 
@@ -11,18 +12,22 @@ namespace SecretFix.Views;
 public partial class KeyboardFixView : UserControl
 {
     private readonly WindowsKeyboardService _keyboard = new();
+    private readonly DeviceDetectionService _deviceDetection;
     private readonly BackupService _backup;
     private readonly AppLogService _log;
     private KeyboardSnapshot? _sessionSnapshot;
     private Button? _selectedDevice;
+    private bool _suppressSelectionToast;
 
     public KeyboardFixView(BackupService backup, AppLogService log)
     {
         InitializeComponent();
         _backup = backup;
         _log = log;
+        _deviceDetection = new DeviceDetectionService(log);
         BuildDeviceCards();
         SelectDevice(KeyboardWooting);
+        Loaded += async (_, _) => await DetectAsync();
     }
 
     private void BuildDeviceCards()
@@ -43,7 +48,8 @@ public partial class KeyboardFixView : UserControl
                     new Image
                     {
                         Source = new BitmapImage(new Uri(parts[0], UriKind.Relative)),
-                        Height = 74,
+                        Height = 68,
+                        MaxWidth = 150,
                         Stretch = Stretch.Uniform,
                         Margin = new Thickness(0, 2, 0, 12)
                     },
@@ -140,8 +146,61 @@ public partial class KeyboardFixView : UserControl
         {
             HeroKeyboardImage.Source = new BitmapImage(new Uri(parts[0], UriKind.Relative));
             SelectedKeyboardText.Text = $"{parts[1]} {parts[2]}";
-            NotificationService.Show($"{parts[1]} {parts[2]} selecionado");
+            if (!_suppressSelectionToast)
+                DetectedKeyboardText.Text = $"Selecionado manualmente: {parts[1]} {parts[2]}";
         }
+    }
+
+    private async void DetectAgain_Click(object sender, RoutedEventArgs e) => await DetectAsync();
+
+    private async Task DetectAsync()
+    {
+        try
+        {
+            DetectedKeyboardText.Text = "Detectando teclado...";
+            var devices = await _deviceDetection.DetectAsync(DeviceKind.Keyboard);
+            var detected = devices.FirstOrDefault();
+            if (detected is null)
+            {
+                DetectedKeyboardText.Text = "Teclado detectado: Generic Keyboard";
+                return;
+            }
+
+            var known = detected.KnownDevice ?? KnownDevices.GenericKeyboard;
+            SelectMatchingDevice(known);
+            DetectedKeyboardText.Text = detected.IsExactMatch
+                ? $"Detectado automaticamente: {known.Manufacturer} {known.Model} (VID={detected.Vid} PID={detected.Pid})"
+                : "Teclado detectado: Dispositivo HID - modelo exato nao identificado";
+        }
+        catch (Exception ex)
+        {
+            _log.Error("Keyboard detection failed", ex);
+            DetectedKeyboardText.Text = "Deteccao falhou. Perfil Generic mantido.";
+        }
+    }
+
+    private void SelectMatchingDevice(KnownDevice known)
+    {
+        foreach (var button in FindVisualChildren<Button>(KeyboardScroll))
+        {
+            if (button.Tag is not string tag)
+                continue;
+
+            var parts = tag.Split('|');
+            if (parts.Length == 3 &&
+                string.Equals(parts[1], known.Manufacturer, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(parts[2], known.Model, StringComparison.OrdinalIgnoreCase))
+            {
+                _suppressSelectionToast = true;
+                SelectDevice(button);
+                _suppressSelectionToast = false;
+                return;
+            }
+        }
+
+        _suppressSelectionToast = true;
+        SelectDevice(KeyboardGeneric);
+        _suppressSelectionToast = false;
     }
 
     private void RestoreSnapshot(KeyboardSnapshot snapshot, string source)

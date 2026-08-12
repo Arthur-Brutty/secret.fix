@@ -1,0 +1,18 @@
+<Window x:Class="SecretFix.CrosshairOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize"
+        Focusable="False"
+        IsHitTestVisible="False">
+    <Canvas x:Name="RootCanvas" Background="Transparent">
+        <Line x:Name="LeftLine" Stroke="#D91F2F" StrokeThickness="2"/>
+        <Line x:Name="RightLine" Stroke="#D91F2F" StrokeThickness="2"/>
+        <Line x:Name="TopLine" Stroke="#D91F2F" StrokeThickness="2"/>
+        <Line x:Name="BottomLine" Stroke="#D91F2F" StrokeThickness="2"/>
+    </Canvas>
+</Window>

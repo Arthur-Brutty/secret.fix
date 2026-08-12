@@ -14,4 +14,9 @@ public sealed class AppLogService
         var line = $"{DateTimeOffset.Now:O} {message}{Environment.NewLine}";
         File.AppendAllText(Path.Combine(_folder, "secretfix.log"), line);
     }
+
+    public void Error(string message, Exception exception)
+    {
+        Info($"{message}. {exception}");
+    }
 }

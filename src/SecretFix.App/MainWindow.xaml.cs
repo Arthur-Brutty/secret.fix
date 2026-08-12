@@ -15,30 +15,33 @@ public partial class MainWindow : Window
 {
     private readonly BackupService _backup = new();
     private readonly AppLogService _log = new();
-    private readonly ILicenseService _licenseService = new MockLicenseService();
-    private LicenseInfo? _license;
+    private readonly ILicenseService _licenseService;
+    private readonly LicenseInfo _license;
     private Button? _activeButton;
     private string _currentPage = "";
+    private bool _isFullscreen;
+    private WindowState _preFullscreenState;
+    private ResizeMode _preFullscreenResizeMode;
 
-    public MainWindow()
+    public MainWindow(LicenseInfo license, ILicenseService licenseService)
     {
         InitializeComponent();
+        _license = license;
+        _licenseService = licenseService;
         Loaded += MainWindow_Loaded;
         StateChanged += MainWindow_StateChanged;
+        KeyDown += MainWindow_KeyDown;
         NotificationService.Requested += ShowToast;
     }
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
         StartBackgroundVideo();
-        _license = await _licenseService.GetCurrentAsync();
-        _log.Info($"secret.fix start. Version=v0.2-test; User={_license.Username}; Plan={_license.Plan}; Status={_license.Status}");
-
+        _log.Info($"secret.fix start. Version=v0.3-test; User={_license.Username}; Plan={_license.Plan}; Status={_license.Status}");
         UserText.Text = _license.Username;
         PlanText.Text = _license.Plan.ToString().ToUpperInvariant();
-        VersionText.Text = "v0.2 test build";
+        VersionText.Text = "v0.3 test build";
         ApplyFeatureGates();
-
         await RunSplashAsync();
         Navigate("Mouse");
     }
@@ -46,6 +49,7 @@ public partial class MainWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         NotificationService.Requested -= ShowToast;
+        CrosshairOverlayService.Close();
         GalaxyBackground.Stop();
         base.OnClosed(e);
     }
@@ -69,7 +73,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            _log.Info($"Background video failed to start. Error={ex.Message}");
+            _log.Error("Background video failed to start", ex);
             GalaxyBackground.Visibility = Visibility.Collapsed;
         }
     }
@@ -78,16 +82,15 @@ public partial class MainWindow : Window
     {
         SplashLayer.Opacity = 0;
         SplashLayer.Visibility = Visibility.Visible;
-        SplashLayer.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(380)));
-        SplashScale.BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation(0.96, 1, TimeSpan.FromMilliseconds(520)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
-        SplashScale.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation(0.96, 1, TimeSpan.FromMilliseconds(520)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
-        await Task.Delay(900);
+        SplashLayer.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(320)));
+        SplashScale.BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation(0.96, 1, TimeSpan.FromMilliseconds(480)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+        SplashScale.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation(0.96, 1, TimeSpan.FromMilliseconds(480)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+        await Task.Delay(850);
 
-        AppShell.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(260)));
-        var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(260));
+        AppShell.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(240)));
+        var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(240));
         fade.Completed += (_, _) => SplashLayer.Visibility = Visibility.Collapsed;
         SplashLayer.BeginAnimation(OpacityProperty, fade);
-        await Task.Delay(260);
     }
 
     private void Nav_Click(object sender, RoutedEventArgs e)
@@ -98,53 +101,60 @@ public partial class MainWindow : Window
 
     private void Navigate(string page)
     {
-        if (_license is null || page == _currentPage)
+        if (page == _currentPage)
             return;
 
-        var feature = FeatureForPage(page);
-        var allowed = feature is null || FeatureCatalog.IsAllowed(_license.Plan, feature.Value);
-        var minimumPlan = feature is null ? PlanTier.Core : FeatureCatalog.MinimumPlan(feature.Value);
-
-        UserControl view = page switch
+        try
         {
-            "Mouse" => new MouseFixView(_backup, _log),
-            "Keyboard" => new KeyboardFixView(_backup, _log),
-            "FiveM" => new FiveMView(allowed, minimumPlan, _log),
-            "Flick" => new FlickTrainerView(allowed, minimumPlan),
-            "Sensi" => new SensiView(_backup, _log, allowed, minimumPlan),
-            "Aim" => new AimView(allowed, minimumPlan),
-            "Services" => new ServicesView(allowed, minimumPlan),
-            "Display" => new DisplayView(allowed, minimumPlan),
-            "Account" => new AccountView(_license),
-            _ => new PlaceholderView(page, minimumPlan, allowed)
-        };
+            var feature = FeatureForPage(page);
+            var allowed = feature is null || FeatureCatalog.IsAllowed(_license.Plan, feature.Value);
+            var minimumPlan = feature is null ? PlanTier.Core : FeatureCatalog.MinimumPlan(feature.Value);
 
-        var fadeOut = new DoubleAnimation(MainContent.Opacity, 0, TimeSpan.FromMilliseconds(90));
-        fadeOut.Completed += (_, _) =>
+            UserControl view = page switch
+            {
+                "Mouse" => new MouseFixView(_backup, _log),
+                "Keyboard" => new KeyboardFixView(_backup, _log),
+                "FiveM" => new FiveMView(allowed, minimumPlan, _log),
+                "Flick" => new FlickTrainerView(allowed, minimumPlan),
+                "Sensi" => new SensiView(_backup, _log, allowed, minimumPlan),
+                "Aim" => new AimView(allowed, minimumPlan),
+                "Services" => new ServicesView(allowed, minimumPlan),
+                "Display" => new DisplayView(allowed, minimumPlan),
+                "Account" => CreateAccountView(),
+                _ => new PlaceholderView(page, minimumPlan, allowed)
+            };
+
+            var fadeOut = new DoubleAnimation(MainContent.Opacity, 0, TimeSpan.FromMilliseconds(80));
+            fadeOut.Completed += (_, _) =>
+            {
+                MainContent.Content = view;
+                MainContent.Opacity = 0;
+                MainContent.RenderTransform = new TranslateTransform(0, 8);
+                MainContent.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(160)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+                ((TranslateTransform)MainContent.RenderTransform).BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(160)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+            };
+
+            MainContent.BeginAnimation(OpacityProperty, fadeOut);
+            _currentPage = page;
+            SetActiveButton(page);
+        }
+        catch (Exception ex)
         {
-            MainContent.Content = view;
-            MainContent.Opacity = 0;
-            MainContent.RenderTransform = new TranslateTransform(0, 8);
-            MainContent.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(170))
-            {
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
-            });
-            ((TranslateTransform)MainContent.RenderTransform).BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(170))
-            {
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
-            });
-        };
-        MainContent.BeginAnimation(OpacityProperty, fadeOut);
+            _log.Error($"Navigation failed. Page={page}", ex);
+            NotificationService.Show($"Falha ao abrir {page}. Erro registrado.");
+        }
+    }
 
-        _currentPage = page;
-        SetActiveButton(page);
+    private AccountView CreateAccountView()
+    {
+        var view = new AccountView(_license);
+        view.SignOutRequested += (_, _) => SignOut();
+        view.FullscreenRequested += (_, _) => ToggleFullscreen();
+        return view;
     }
 
     private void ApplyFeatureGates()
     {
-        if (_license is null)
-            return;
-
         SetGate(MouseBadge, FeatureId.MouseFix);
         SetGate(KeyboardBadge, FeatureId.KeyboardFix);
         SetGate(FiveMBadge, FeatureId.FiveM);
@@ -157,14 +167,11 @@ public partial class MainWindow : Window
 
     private void SetGate(TextBlock badge, FeatureId feature)
     {
-        if (_license is null)
-            return;
-
         var allowed = FeatureCatalog.IsAllowed(_license.Plan, feature);
         badge.Text = allowed ? "" : FeatureCatalog.MinimumPlan(feature) switch
         {
             PlanTier.Pulse => "PULSE+",
-            PlanTier.Apex => "APEX ONLY",
+            PlanTier.Apex => "APEX",
             _ => "CORE"
         };
     }
@@ -204,6 +211,9 @@ public partial class MainWindow : Window
     {
         Dispatcher.Invoke(() =>
         {
+            while (ToastHost.Children.Count >= 3)
+                ToastHost.Children.RemoveAt(ToastHost.Children.Count - 1);
+
             var toast = new NotificationToast(message) { Margin = new Thickness(0, 0, 0, 8) };
             toast.Closed += (_, _) => ToastHost.Children.Remove(toast);
             ToastHost.Children.Insert(0, toast);
@@ -218,7 +228,7 @@ public partial class MainWindow : Window
 
     private void GalaxyBackground_MediaFailed(object sender, ExceptionRoutedEventArgs e)
     {
-        _log.Info($"Background video playback failed. Error={e.ErrorException.Message}");
+        _log.Error("Background video playback failed", e.ErrorException);
         GalaxyBackground.Visibility = Visibility.Collapsed;
     }
 
@@ -228,6 +238,8 @@ public partial class MainWindow : Window
             GalaxyBackground.Pause();
         else if (GalaxyBackground.Source is not null)
             GalaxyBackground.Play();
+
+        MaximizeButton.Content = WindowState == WindowState.Maximized ? "[]" : "[]";
     }
 
     private void DragHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -238,7 +250,53 @@ public partial class MainWindow : Window
 
     private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
+    private void MaximizeRestore_Click(object sender, RoutedEventArgs e)
+    {
+        if (_isFullscreen)
+        {
+            ToggleFullscreen();
+            return;
+        }
+
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    }
+
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void SignOut()
+    {
+        _licenseService.SignOut();
+        CrosshairOverlayService.Close();
+        var login = new LoginWindow();
+        login.Show();
+        Close();
+    }
+
+    private void ToggleFullscreen()
+    {
+        if (!_isFullscreen)
+        {
+            _preFullscreenState = WindowState;
+            _preFullscreenResizeMode = ResizeMode;
+            WindowState = WindowState.Normal;
+            ResizeMode = ResizeMode.NoResize;
+            WindowState = WindowState.Maximized;
+            _isFullscreen = true;
+            NotificationService.Show("Tela cheia ativada. Pressione Esc para sair.");
+        }
+        else
+        {
+            ResizeMode = _preFullscreenResizeMode;
+            WindowState = _preFullscreenState;
+            _isFullscreen = false;
+        }
+    }
+
+    private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape && _isFullscreen)
+            ToggleFullscreen();
+    }
 
     private static FeatureId? FeatureForPage(string page) => page switch
     {

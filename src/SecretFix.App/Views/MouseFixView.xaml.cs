@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using SecretFix.Core;
 using SecretFix.Infrastructure.Windows;
 using SecretFix.Services;
 
@@ -11,18 +12,22 @@ namespace SecretFix.Views;
 public partial class MouseFixView : UserControl
 {
     private readonly WindowsInputService _input = new();
+    private readonly DeviceDetectionService _deviceDetection;
     private readonly BackupService _backup;
     private readonly AppLogService _log;
     private MouseSnapshot? _sessionSnapshot;
     private Button? _selectedDevice;
+    private bool _suppressSelectionToast;
 
     public MouseFixView(BackupService backup, AppLogService log)
     {
         InitializeComponent();
         _backup = backup;
         _log = log;
+        _deviceDetection = new DeviceDetectionService(log);
         BuildDeviceCards();
         SelectDevice(MouseLogitech);
+        Loaded += async (_, _) => await DetectAsync();
     }
 
     private void BuildDeviceCards()
@@ -47,7 +52,8 @@ public partial class MouseFixView : UserControl
                             new Image
                             {
                                 Source = new BitmapImage(new Uri(parts[0], UriKind.Relative)),
-                                Height = 86,
+                                Height = 78,
+                                MaxWidth = 126,
                                 Stretch = Stretch.Uniform,
                                 Margin = new Thickness(0, 0, 0, 8)
                             },
@@ -144,8 +150,61 @@ public partial class MouseFixView : UserControl
         {
             HeroMouseImage.Source = new BitmapImage(new Uri(parts[0], UriKind.Relative));
             SelectedMouseText.Text = $"{parts[1]} {parts[2]}";
-            NotificationService.Show($"{parts[1]} {parts[2]} selecionado");
+            if (!_suppressSelectionToast)
+                DetectedMouseText.Text = $"Selecionado manualmente: {parts[1]} {parts[2]}";
         }
+    }
+
+    private async void DetectAgain_Click(object sender, RoutedEventArgs e) => await DetectAsync();
+
+    private async Task DetectAsync()
+    {
+        try
+        {
+            DetectedMouseText.Text = "Detectando mouse...";
+            var devices = await _deviceDetection.DetectAsync(DeviceKind.Mouse);
+            var detected = devices.FirstOrDefault();
+            if (detected is null)
+            {
+                DetectedMouseText.Text = "Mouse detectado: Generic";
+                return;
+            }
+
+            var known = detected.KnownDevice ?? KnownDevices.GenericMouse;
+            SelectMatchingDevice(known);
+            DetectedMouseText.Text = detected.IsExactMatch
+                ? $"Detectado automaticamente: {known.Manufacturer} {known.Model} (VID={detected.Vid} PID={detected.Pid})"
+                : "Mouse detectado: Dispositivo HID - modelo exato nao identificado";
+        }
+        catch (Exception ex)
+        {
+            _log.Error("Mouse detection failed", ex);
+            DetectedMouseText.Text = "Deteccao falhou. Perfil Generic mantido.";
+        }
+    }
+
+    private void SelectMatchingDevice(KnownDevice known)
+    {
+        foreach (var button in FindVisualChildren<Button>(MouseScroll))
+        {
+            if (button.Tag is not string tag)
+                continue;
+
+            var parts = tag.Split('|');
+            if (parts.Length == 3 &&
+                string.Equals(parts[1], known.Manufacturer, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(parts[2], known.Model, StringComparison.OrdinalIgnoreCase))
+            {
+                _suppressSelectionToast = true;
+                SelectDevice(button);
+                _suppressSelectionToast = false;
+                return;
+            }
+        }
+
+        _suppressSelectionToast = true;
+        SelectDevice(MouseGeneric);
+        _suppressSelectionToast = false;
     }
 
     private void RestoreSnapshot(MouseSnapshot snapshot, string source)
