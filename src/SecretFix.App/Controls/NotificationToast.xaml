@@ -1,0 +1,39 @@
+<UserControl x:Class="SecretFix.Controls.NotificationToast"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="292"
+             MinHeight="58"
+             Opacity="0"
+             RenderTransformOrigin="0.5,0.5">
+    <UserControl.RenderTransform>
+        <TranslateTransform x:Name="ToastTranslate" X="24"/>
+    </UserControl.RenderTransform>
+    <Border Background="#F0101014"
+            BorderBrush="#5A1A22"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="13,10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="24"/>
+            </Grid.ColumnDefinitions>
+            <Border Width="22" Height="22" CornerRadius="11" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" Background="{StaticResource DangerWashBrush}">
+                <TextBlock Text="✓" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock x:Name="MessageText"
+                       Grid.Column="1"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"/>
+            <Button Grid.Column="2"
+                    Style="{StaticResource WindowButtonStyle}"
+                    Content="×"
+                    FontSize="16"
+                    Foreground="{StaticResource MutedBrush}"
+                    Click="Close_Click"/>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,38 @@
+<UserControl x:Class="SecretFix.Views.SensiView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Text="Sensi" Style="{StaticResource H1TextStyle}"/>
+            <TextBlock Text="Ajustes finos do mouse" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Margin="0,24,0,0" MaxWidth="720" HorizontalAlignment="Left">
+            <Border Style="{StaticResource CardBorderStyle}" Padding="18" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Configuração de Entrada do Mouse" FontSize="16" FontWeight="SemiBold"/>
+                    <CheckBox x:Name="DisableAcceleration" Content="DESATIVAR ACELERAÇÃO DO WINDOWS" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Margin="0,16,0,0"/>
+                    <TextBlock Text="Remove Enhance Pointer Precision usando SystemParametersInfo, com snapshot antes de aplicar." Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardBorderStyle}" Padding="18">
+                <StackPanel>
+                    <TextBlock Text="Sensibilidade (Registry Value)" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                    <DockPanel Margin="0,8,0,18">
+                        <TextBlock Text="Velocidade do Ponteiro" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="CurrentValueText" Text="Valor Atual: 10" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <Slider x:Name="SpeedSlider" Style="{StaticResource ThinSliderStyle}" Minimum="1" Maximum="20" Value="10" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SpeedSlider_ValueChanged"/>
+                    <TextBlock Text="1-9: Lento | 10: 1:1 | 11-20: Rápido" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,10,0,20"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
+                        <Button Content="RESTAURAR PADRÃO" Style="{StaticResource SecondaryButtonStyle}" Click="RestoreDefault_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

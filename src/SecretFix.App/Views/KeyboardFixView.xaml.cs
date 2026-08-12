@@ -1,6 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using SecretFix.Infrastructure.Windows;
 using SecretFix.Services;
 
@@ -19,7 +21,55 @@ public partial class KeyboardFixView : UserControl
         InitializeComponent();
         _backup = backup;
         _log = log;
+        BuildDeviceCards();
         SelectDevice(KeyboardWooting);
+    }
+
+    private void BuildDeviceCards()
+    {
+        foreach (var button in FindVisualChildren<Button>(KeyboardScroll))
+        {
+            if (button.Tag is not string tag)
+                continue;
+
+            var parts = tag.Split('|');
+            if (parts.Length != 3)
+                continue;
+
+            button.Content = new StackPanel
+            {
+                Children =
+                {
+                    new Image
+                    {
+                        Source = new BitmapImage(new Uri(parts[0], UriKind.Relative)),
+                        Height = 74,
+                        Stretch = Stretch.Uniform,
+                        Margin = new Thickness(0, 2, 0, 12)
+                    },
+                    new TextBlock
+                    {
+                        Text = parts[1],
+                        FontWeight = FontWeights.SemiBold,
+                        FontSize = 13,
+                        TextAlignment = TextAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    },
+                    new TextBlock
+                    {
+                        Text = parts[2],
+                        Foreground = (Brush)FindResource("MutedBrush"),
+                        FontSize = 11,
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap,
+                        MaxWidth = 150,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    }
+                }
+            };
+            button.MouseEnter += Device_MouseEnter;
+            button.MouseLeave += Device_MouseLeave;
+        }
     }
 
     private void Apply_Click(object sender, RoutedEventArgs e)
@@ -37,27 +87,13 @@ public partial class KeyboardFixView : UserControl
 
             var after = _keyboard.ReadKeyboard();
             _log.Info($"KeyboardFix applied. Before={before}; After={after}; Backup={backupPath}");
-            StatusText.Text = $"Aplicado com backup salvo. Antes: speed {before.Speed}, delay {before.Delay}. Depois: speed {after.Speed}, delay {after.Delay}.";
-            ShowToast("TecladoFix aplicado com snapshot validado.");
+            NotificationService.Show($"TecladoFix aplicado. Speed {after.Speed}, delay {after.Delay}.");
         }
         catch (Exception ex)
         {
             _log.Info($"KeyboardFix apply failed. Error={ex.Message}");
-            StatusText.Text = $"Falha ao aplicar: {ex.Message}";
-            ShowToast("Falha ao aplicar TecladoFix.");
+            NotificationService.Show($"Falha ao aplicar TecladoFix: {ex.Message}");
         }
-    }
-
-    private void RestoreSession_Click(object sender, RoutedEventArgs e)
-    {
-        if (_sessionSnapshot is null)
-        {
-            StatusText.Text = "Nenhum snapshot desta sessao para restaurar.";
-            ShowToast("Nao ha snapshot de sessao.");
-            return;
-        }
-
-        RestoreSnapshot(_sessionSnapshot, "sessao");
     }
 
     private void RestoreLatest_Click(object sender, RoutedEventArgs e)
@@ -65,12 +101,11 @@ public partial class KeyboardFixView : UserControl
         var latest = _backup.LoadLatestKeyboard();
         if (latest is null)
         {
-            StatusText.Text = "Nenhum backup de teclado encontrado em LocalAppData/SecretFix/backups.";
-            ShowToast("Nenhum backup encontrado.");
+            NotificationService.Show("Nenhum backup de teclado encontrado.");
             return;
         }
 
-        RestoreSnapshot(latest, "ultimo backup");
+        RestoreSnapshot(latest, "último backup");
     }
 
     private void Device_Click(object sender, RoutedEventArgs e)
@@ -79,18 +114,34 @@ public partial class KeyboardFixView : UserControl
             SelectDevice(button);
     }
 
+    private void Option_Checked(object sender, RoutedEventArgs e)
+    {
+        if (sender is CheckBox box && box.Content is string label)
+            NotificationService.Show($"{ToTitle(label)} selecionado");
+    }
+
     private void SelectDevice(Button button)
     {
+        if (button.Tag is not string tag)
+            return;
+
         if (_selectedDevice is not null)
         {
-            _selectedDevice.BorderBrush = (System.Windows.Media.Brush)FindResource("BorderBrush");
-            _selectedDevice.Background = System.Windows.Media.Brushes.Transparent;
+            _selectedDevice.BorderBrush = (Brush)FindResource("BorderBrush");
+            _selectedDevice.Background = (Brush)FindResource("PanelBrush");
         }
 
         _selectedDevice = button;
-        button.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentBrush");
-        button.Background = (System.Windows.Media.Brush)FindResource("DangerWashBrush");
-        ShowToast($"{button.Tag} selecionado.");
+        button.BorderBrush = (Brush)FindResource("AccentBrush");
+        button.Background = (Brush)FindResource("DangerWashBrush");
+
+        var parts = tag.Split('|');
+        if (parts.Length == 3)
+        {
+            HeroKeyboardImage.Source = new BitmapImage(new Uri(parts[0], UriKind.Relative));
+            SelectedKeyboardText.Text = $"{parts[1]} {parts[2]}";
+            NotificationService.Show($"{parts[1]} {parts[2]} selecionado");
+        }
     }
 
     private void RestoreSnapshot(KeyboardSnapshot snapshot, string source)
@@ -100,27 +151,61 @@ public partial class KeyboardFixView : UserControl
             _keyboard.Restore(snapshot);
             var after = _keyboard.ReadKeyboard();
             _log.Info($"KeyboardFix restored from {source}. Target={snapshot}; After={after}");
-            StatusText.Text = $"Restaurado a partir de {source}. Speed atual: {after.Speed}, delay: {after.Delay}.";
-            ShowToast("Configuracao do teclado restaurada.");
+            NotificationService.Show($"Teclado restaurado: speed {after.Speed}, delay {after.Delay}.");
         }
         catch (Exception ex)
         {
             _log.Info($"KeyboardFix restore failed. Source={source}; Error={ex.Message}");
-            StatusText.Text = $"Falha ao restaurar: {ex.Message}";
-            ShowToast("Falha ao restaurar teclado.");
+            NotificationService.Show($"Falha ao restaurar teclado: {ex.Message}");
         }
     }
 
-    private void ShowToast(string message)
+    private void KeyboardPrev_Click(object sender, RoutedEventArgs e) => KeyboardScroll.ScrollToHorizontalOffset(Math.Max(0, KeyboardScroll.HorizontalOffset - 380));
+
+    private void KeyboardNext_Click(object sender, RoutedEventArgs e) => KeyboardScroll.ScrollToHorizontalOffset(KeyboardScroll.HorizontalOffset + 380);
+
+    private static void Device_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
     {
-        ToastText.Text = message;
-        ToastHost.Visibility = Visibility.Visible;
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
-        timer.Tick += (_, _) =>
+        if (sender is not Button button || button.RenderTransform is not TransformGroup group)
+            return;
+
+        if (group.Children[0] is ScaleTransform scale)
         {
-            timer.Stop();
-            ToastHost.Visibility = Visibility.Collapsed;
-        };
-        timer.Start();
+            scale.BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation(1, 1.02, TimeSpan.FromMilliseconds(160)));
+            scale.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation(1, 1.02, TimeSpan.FromMilliseconds(160)));
+        }
+
+        if (group.Children[1] is TranslateTransform translate)
+            translate.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(0, -3, TimeSpan.FromMilliseconds(160)));
+    }
+
+    private static void Device_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        if (sender is not Button button || button.RenderTransform is not TransformGroup group)
+            return;
+
+        if (group.Children[0] is ScaleTransform scale)
+        {
+            scale.BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation(scale.ScaleX, 1, TimeSpan.FromMilliseconds(170)));
+            scale.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation(scale.ScaleY, 1, TimeSpan.FromMilliseconds(170)));
+        }
+
+        if (group.Children[1] is TranslateTransform translate)
+            translate.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(translate.Y, 0, TimeSpan.FromMilliseconds(170)));
+    }
+
+    private static string ToTitle(string value) => value.Length == 0 ? value : value[0] + value[1..].ToLowerInvariant();
+
+    private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
+    {
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T typed)
+                yield return typed;
+
+            foreach (var nested in FindVisualChildren<T>(child))
+                yield return nested;
+        }
     }
 }

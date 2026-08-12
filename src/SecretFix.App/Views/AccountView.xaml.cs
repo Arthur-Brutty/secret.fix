@@ -11,11 +11,11 @@ public partial class AccountView : UserControl
         UsernameText.Text = license.Username;
         LicenseText.Text = license.MaskedLicense;
         PlanText.Text = license.Plan.ToString().ToUpperInvariant();
-        ExpirationText.Text = license.Expiration?.ToString("yyyy-MM-dd") ?? "Lifetime / dev";
+        ExpirationText.Text = license.Expiration?.ToString("yyyy-MM-dd") ?? "Lifetime";
         DeviceText.Text = license.Device;
         VersionText.Text = license.AppVersion;
         StatusText.Text = license.Status;
-        DeviceBindText.Text = $"{license.DeviceBindUsed}/{license.DeviceBindLimit}";
+        DeviceBindText.Text = $"{license.DeviceBindUsed} / {license.DeviceBindLimit}";
         SupportText.Text = license.SupportId;
     }
 }

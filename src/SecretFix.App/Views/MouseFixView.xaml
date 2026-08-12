@@ -5,115 +5,90 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="188"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="300"/>
-        </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.ColumnSpan="2">
-            <TextBlock Text="Mouse" FontSize="32" FontWeight="Bold"/>
-            <TextBlock Text="Configuracao avancada de precisao e resposta (Tracking/Flick)" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,0"/>
-        </StackPanel>
-
-        <StackPanel x:Name="ToastHost" Grid.Column="2" HorizontalAlignment="Stretch" Visibility="Collapsed">
-            <Border Background="#141418" BorderBrush="#5A1820" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,10">
-                <DockPanel>
-                    <TextBlock Text="OK" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" Margin="0,0,12,0"/>
-                    <TextBlock x:Name="ToastText" TextWrapping="Wrap"/>
-                </DockPanel>
-            </Border>
-        </StackPanel>
-
-        <Border Grid.Row="1" Grid.Column="0" Margin="0,42,20,0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
+        <Grid>
             <StackPanel>
-                <TextBlock Text="PERFORMANCE" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" Margin="18,18,18,8"/>
-                <CheckBox x:Name="MousePrecision" Content="Mouse Precision" IsChecked="True" Margin="18,9"/>
-                <CheckBox x:Name="PerformanceBoost" Content="Performance Boost" IsChecked="True" Margin="18,9"/>
-                <CheckBox x:Name="Tracking" Content="Tracking" IsChecked="True" Margin="18,9"/>
-                <CheckBox x:Name="Sensi" Content="Sensi X/Y" Margin="18,9"/>
-                <CheckBox x:Name="Flick" Content="Flick" Margin="18,9"/>
-                <CheckBox x:Name="HalfMs" Content="0.5MS visual flag" Margin="18,9"/>
+                <TextBlock Text="Mouse" Style="{StaticResource H1TextStyle}"/>
+                <TextBlock Text="Configuração avançada de precisão e resposta" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
             </StackPanel>
-        </Border>
-
-        <Grid Grid.Row="1" Grid.Column="1" Margin="0,34">
-            <Image Source="/Assets/Devices/Mice/hero-logitech-g.png"
-                   Width="360"
-                   Stretch="Uniform"
-                   RenderOptions.BitmapScalingMode="HighQuality"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
-            <Border Width="250" Height="38" Background="#330B10" CornerRadius="125,125,0,0" Opacity="0.65" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,42"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
+                <Button Content="RESTAURAR" Style="{StaticResource SecondaryButtonStyle}" Click="RestoreLatest_Click"/>
+            </StackPanel>
         </Grid>
 
-        <Border Grid.Row="1" Grid.Column="2" Margin="20,42,0,0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
-            <StackPanel>
-                <TextBlock Text="SISTEMA" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" Margin="18,18,18,8"/>
-                <CheckBox Content="Registros mouse" Margin="18,9"/>
-                <CheckBox Content="1SLC / RAM" Margin="18,9"/>
-                <CheckBox Content="Flags" Margin="18,9"/>
-                <CheckBox Content="Accessibility" IsChecked="True" Margin="18,9"/>
-                <Separator Margin="18,14"/>
-                <Button Content="Aplicar selecionados" Background="{StaticResource AccentBrush}" Foreground="White" Margin="18,0,18,10" Height="44" Click="Apply_Click"/>
-                <Button Content="Restaurar sessao" Margin="18,0,18,10" Height="44" Click="RestoreSession_Click"/>
-                <Button Content="Restaurar ultimo backup" Margin="18,0,18,14" Height="44" Click="RestoreLatest_Click"/>
-                <TextBlock x:Name="StatusText" Text="Nenhuma alteracao aplicada." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="18,0,18,18"/>
-            </StackPanel>
-        </Border>
+        <Grid Grid.Row="1" Margin="0,18,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="260"/>
+            </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="2" Grid.ColumnSpan="3" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,18,0,0">
-            <StackPanel>
-                <TextBlock Text="SELECIONE SEU MOUSE" FontWeight="Bold" Foreground="{StaticResource TextBrush}" Margin="0,0,0,12"/>
-                <UniformGrid Columns="6">
-                    <Button x:Name="MouseLogitech" Tag="Logitech G Pro X Superlight 2" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel>
-                            <Border Height="92" Background="#141418" CornerRadius="8" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
-                                <Image Source="/Assets/Devices/Mice/logitech-g-pro-x.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/>
-                            </Border>
-                            <TextBlock Text="Logitech" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-                            <TextBlock Text="G Pro X Superlight 2" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Tag="Razer Viper V3 Pro" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel>
-                            <Border Height="92" Background="#141418" CornerRadius="8"><Image Source="/Assets/Devices/Mice/razer-viper-v3.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border>
-                            <TextBlock Text="Razer" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-                            <TextBlock Text="Viper V3 Pro" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Tag="Lamzu Atlantis OG V2 4K" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel>
-                            <Border Height="92" Background="#F2F2F2" CornerRadius="8"><Image Source="/Assets/Devices/Mice/lamzu-atlantis.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border>
-                            <TextBlock Text="Lamzu" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-                            <TextBlock Text="Atlantis OG V2 4K" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Tag="Finalmouse UltralightX Lion" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel>
-                            <Border Height="92" Background="#17171C" CornerRadius="8"><Image Source="/Assets/Devices/Mice/finalmouse-ultralightx.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border>
-                            <TextBlock Text="Finalmouse" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-                            <TextBlock Text="UltralightX - Lion" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Tag="ASUS ROG Harpe Ace" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel>
-                            <Border Height="92" Background="#E9E9E9" CornerRadius="8"><Image Source="/Assets/Devices/Mice/asus-rog-harpe.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border>
-                            <TextBlock Text="ASUS ROG" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-                            <TextBlock Text="Harpe Ace" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Tag="Zowie EC2-CW" Click="Device_Click" Padding="12">
-                        <StackPanel>
-                            <Border Height="92" Background="#121216" CornerRadius="8"><Image Source="/Assets/Devices/Mice/zowie-ec2cw.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border>
-                            <TextBlock Text="Zowie" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-                            <TextBlock Text="EC2-CW" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </UniformGrid>
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                <CheckBox x:Name="MousePrecision" Content="MOUSE PRECISION" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
+                <CheckBox x:Name="PerformanceBoost" Content="PERFORMANCE BOOST" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
+                <CheckBox x:Name="Tracking" Content="TRACKING" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
+                <CheckBox x:Name="Sensi" Content="SENSI" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox x:Name="Flick" Content="FLICK" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox x:Name="HalfMs" Content="0.5MS" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
             </StackPanel>
+
+            <Grid Grid.Column="1">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image x:Name="HeroMouseImage"
+                           Source="/Assets/Devices/Mice/hero-logitech-g.png"
+                           Height="350"
+                           Stretch="Uniform"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock x:Name="SelectedMouseText" Text="Logitech G Pro X Superlight 2" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                </StackPanel>
+                <Border Width="280" Height="34" Background="#661B060A" CornerRadius="140,140,0,0" Opacity="0.75" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,24"/>
+            </Grid>
+
+            <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="20,0,0,0">
+                <CheckBox Content="REGISTROS MOUSE" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox Content="ISLC / RAM" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox Content="SENSI X/Y" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
+                <CheckBox Content="FLAGS" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox Content="ACCESSIBILITY" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
+                <CheckBox Content="BOOST FIVEM" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,14,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="3" Height="18" Background="{StaticResource AccentBrush}" Margin="0,0,12,0"/>
+                        <TextBlock Text="SELECIONE SEU MOUSE" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}" FontSize="13"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="‹" Width="34" Height="34" Padding="0" Click="MousePrev_Click" Margin="0,0,8,0"/>
+                        <Button Content="›" Width="34" Height="34" Padding="0" Click="MouseNext_Click"/>
+                    </StackPanel>
+                </Grid>
+                <ScrollViewer x:Name="MouseScroll" Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" Margin="0,12,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="MouseLogitech" Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/logitech-g-pro-x.png|Logitech|G Pro X Superlight 2" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/logitech-g-pro-x.png|Logitech|G Pro X Superlight" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/razer-viper-v3.png|Razer|Viper V3 Pro" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/razer-viper-v3.png|Razer|DeathAdder V3" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/asus-rog-harpe.png|Logitech|G502 X" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/finalmouse-ultralightx.png|Finalmouse|Starlight" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/zowie-ec2cw.png|Zowie|FK2" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/lamzu-atlantis.png|Lamzu|Atlantis" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/lamzu-atlantis.png|Pulsar|X2H" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/asus-rog-harpe.png|Attack Shark|X3" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/hero-logitech-g.png|secret.fix|Generic" Click="Device_Click"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>
