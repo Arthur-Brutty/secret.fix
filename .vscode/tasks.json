@@ -1,0 +1,64 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "secret.fix: restore",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "restore",
+        "${workspaceFolder}/src/SecretFix.App/SecretFix.App.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "secret.fix: build",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/SecretFix.App/SecretFix.App.csproj",
+        "-c",
+        "Debug"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": "secret.fix: restore"
+    },
+    {
+      "label": "secret.fix: run",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/SecretFix.App/SecretFix.App.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "test",
+      "dependsOn": "secret.fix: restore"
+    },
+    {
+      "label": "secret.fix: publish win-x64",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/src/SecretFix.App/SecretFix.App.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "--self-contained",
+        "true"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "dependsOn": "secret.fix: restore"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+<UserControl x:Class="SecretFix.Views.KeyboardFixView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.ColumnSpan="2">
+            <TextBlock Text="Teclado" FontSize="32" FontWeight="Bold"/>
+            <TextBlock Text="Configuracao avancada de precisao e resposta (Teclado)" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,0"/>
+        </StackPanel>
+
+        <StackPanel x:Name="ToastHost" Grid.Column="2" Visibility="Collapsed">
+            <Border Background="#141418" BorderBrush="#5A1820" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,10">
+                <DockPanel>
+                    <TextBlock Text="OK" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" Margin="0,0,12,0"/>
+                    <TextBlock x:Name="ToastText" TextWrapping="Wrap"/>
+                </DockPanel>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,58,22,0">
+            <CheckBox Content="Perfil de precisao" IsChecked="True"/>
+            <CheckBox Content="Delay minimo" IsChecked="True"/>
+            <CheckBox Content="Repeticao maxima" IsChecked="True"/>
+            <CheckBox x:Name="FilterKeysOff" Content="Filter Keys OFF" IsChecked="True"/>
+            <CheckBox x:Name="StickyKeysOff" Content="Sticky Keys OFF" IsChecked="True"/>
+            <CheckBox x:Name="ToggleKeysOff" Content="Toggle Keys OFF" IsChecked="True"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.Column="1" Margin="0,50">
+            <Border Height="235" MaxWidth="760" Background="#17171C" BorderBrush="#4B4B55" BorderThickness="1" CornerRadius="8" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Grid Margin="18">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <UniformGrid Rows="1" Columns="12">
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ESC"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F1"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F2"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F3"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F4"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F5"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F6"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F7"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F8"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F9"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F10"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F11"/></Border>
+                    </UniformGrid>
+                    <UniformGrid Grid.Row="1" Rows="1" Columns="13">
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="TAB"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="Q"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="W"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="E"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="R"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="T"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="Y"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="U"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="I"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="O"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="P"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="["/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="]"/></Border>
+                    </UniformGrid>
+                    <UniformGrid Grid.Row="2" Rows="1" Columns="12">
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="CAPS"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="A"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="S"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="D"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="G"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="H"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="J"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="K"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="L"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text=";"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ENTER"/></Border>
+                    </UniformGrid>
+                    <UniformGrid Grid.Row="3" Rows="1" Columns="10">
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="CTRL"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="WIN"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ALT"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="SPACE"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ALT"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="FN"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="CTRL"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="LEFT"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="DOWN"/></Border>
+                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="RIGHT"/></Border>
+                    </UniformGrid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="2" Margin="22,58,0,0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
+            <StackPanel>
+                <TextBlock Text="ACOES SEGURAS" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" Margin="18,18,18,8"/>
+                <CheckBox Content="Registro teclado" IsChecked="True" Margin="18,9"/>
+                <CheckBox Content="Modo jogo visual" IsChecked="True" Margin="18,9"/>
+                <CheckBox Content="Teclas de acessibilidade" IsChecked="True" Margin="18,9"/>
+                <Separator Margin="18,14"/>
+                <Button Content="Aplicar perfil teclado" Background="{StaticResource AccentBrush}" Foreground="White" Margin="18,0,18,10" Height="44" Click="Apply_Click"/>
+                <Button Content="Restaurar sessao" Margin="18,0,18,10" Height="44" Click="RestoreSession_Click"/>
+                <Button Content="Restaurar ultimo backup" Margin="18,0,18,14" Height="44" Click="RestoreLatest_Click"/>
+                <TextBlock x:Name="StatusText" Text="Nenhuma alteracao aplicada." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="18,0,18,18"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2" Grid.ColumnSpan="3" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,18,0,0">
+            <StackPanel>
+                <TextBlock Text="SELECIONE SEU TECLADO" FontWeight="Bold" Margin="0,0,0,12"/>
+                <UniformGrid Columns="6">
+                    <Button x:Name="KeyboardWooting" Tag="Wooting 60HE" Click="Device_Click" Margin="0,0,12,0" Padding="12">
+                        <StackPanel>
+                            <Border Height="82" Background="#151519" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="8"><TextBlock Text="60HE" Foreground="{StaticResource AccentBrush}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <TextBlock Text="Wooting 60HE" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                            <TextBlock Text="Analog Rapid Trigger" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Tag="DrunkDeer A75" Click="Device_Click" Margin="0,0,12,0" Padding="12">
+                        <StackPanel><Border Height="82" Background="#2A2624" CornerRadius="8"><TextBlock Text="A75" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="DrunkDeer A75" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="75% Gasket Mount" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                    </Button>
+                    <Button Tag="HyperX Alloy Origins" Click="Device_Click" Margin="0,0,12,0" Padding="12">
+                        <StackPanel><Border Height="82" Background="#151519" CornerRadius="8"><TextBlock Text="HX" Foreground="{StaticResource AccentBrush}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="HyperX Alloy" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="TKL Mechanical" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                    </Button>
+                    <Button Tag="Redragon Fizz" Click="Device_Click" Margin="0,0,12,0" Padding="12">
+                        <StackPanel><Border Height="82" Background="#202026" CornerRadius="8"><TextBlock Text="FIZZ" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Redragon Fizz" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="60% Mechanical" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                    </Button>
+                    <Button Tag="Anne Pro 2" Click="Device_Click" Margin="0,0,12,0" Padding="12">
+                        <StackPanel><Border Height="82" Background="#EAEAEA" CornerRadius="8"><TextBlock Text="AP2" Foreground="#111" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Anne Pro 2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="60% Bluetooth" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                    </Button>
+                    <Button Tag="Keychron K2" Click="Device_Click" Padding="12">
+                        <StackPanel><Border Height="82" Background="#211F1D" CornerRadius="8"><TextBlock Text="K2" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Keychron K2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="75% Wireless" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                    </Button>
+                </UniformGrid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

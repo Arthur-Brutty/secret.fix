@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "secret.fix: debug WPF",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "secret.fix: build",
+      "program": "${workspaceFolder}/src/SecretFix.App/bin/Debug/net8.0-windows/SecretFix.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/SecretFix.App",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    }
+  ]
+}

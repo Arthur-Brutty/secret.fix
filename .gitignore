@@ -1,0 +1,44 @@
+# Build output
+**/bin/
+**/obj/
+build/
+dist/
+artifacts/
+
+# Windows binaries / packages
+*.exe
+*.dll
+*.pdb
+*.msi
+*.zip
+*.rar
+
+# IDE
+.vs/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.user
+*.suo
+
+# Secrets / licensing data
+.env
+.env.*
+secrets.json
+keys.json
+licenses.json
+*.key
+*.license
+
+# Local app data / logs / backups
+logs/
+backups/
+cache/
+*.log
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
