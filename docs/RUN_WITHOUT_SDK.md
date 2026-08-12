@@ -9,8 +9,8 @@ Este projeto e um app WPF em .NET 8. Para compilar localmente, o Windows precisa
 3. Escolha o workflow `Windows build`.
 4. Clique em `Run workflow`.
 5. Espere o build terminar.
-6. Baixe o artifact `secret-fix-win-x64`.
-7. Extraia o zip e rode `SecretFix.exe`.
+6. Baixe o artifact versionado, por exemplo `secret-fix-v0.1-win-x64`.
+7. Extraia o zip e rode o executavel versionado, por exemplo `secret-fix-v0.1.exe`.
 
 O artifact e publicado como `self-contained`, entao nao precisa instalar .NET na maquina para executar.
 

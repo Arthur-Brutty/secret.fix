@@ -1,5 +1,9 @@
 name: Windows build
 
+env:
+  APP_VERSION: v0.1
+  ARTIFACT_NAME: secret-fix-v0.1-win-x64
+
 on:
   push:
     branches: [ main ]
@@ -19,9 +23,12 @@ jobs:
       - name: Build
         run: dotnet build src/SecretFix.App/SecretFix.App.csproj -c Release --no-restore
       - name: Publish self-contained app
-        run: dotnet publish src/SecretFix.App/SecretFix.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/secret-fix-win-x64
+        run: dotnet publish src/SecretFix.App/SecretFix.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/${{ env.ARTIFACT_NAME }}
+      - name: Rename executable with version
+        shell: pwsh
+        run: Rename-Item -Path "artifacts/${{ env.ARTIFACT_NAME }}/SecretFix.exe" -NewName "secret-fix-${{ env.APP_VERSION }}.exe"
       - name: Upload executable artifact
         uses: actions/upload-artifact@v4
         with:
-          name: secret-fix-win-x64
-          path: artifacts/secret-fix-win-x64/
+          name: ${{ env.ARTIFACT_NAME }}
+          path: artifacts/${{ env.ARTIFACT_NAME }}/
