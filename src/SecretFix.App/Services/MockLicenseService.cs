@@ -13,7 +13,7 @@ public sealed class MockLicenseService : ILicenseService
             Expiration: null,
             Device: Environment.MachineName,
             AppVersion: "0.5.0-dev",
-            Status: "ACTIVE (DEV)",
+            Status: "APEX MAX (DEV)",
             DeviceBindUsed: 1,
             DeviceBindLimit: 1,
             SupportId: "SF-DEMO");

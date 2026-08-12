@@ -37,71 +37,12 @@
         </StackPanel>
 
         <Grid Grid.Row="1" Grid.Column="1" Margin="0,50">
-            <Border Height="235" MaxWidth="760" Background="#17171C" BorderBrush="#4B4B55" BorderThickness="1" CornerRadius="8" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                <Grid Margin="18">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <UniformGrid Rows="1" Columns="12">
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ESC"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F1"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F2"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F3"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F4"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F5"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F6"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F7"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F8"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F9"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F10"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F11"/></Border>
-                    </UniformGrid>
-                    <UniformGrid Grid.Row="1" Rows="1" Columns="13">
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="TAB"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="Q"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="W"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="E"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="R"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="T"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="Y"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="U"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="I"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="O"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="P"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="["/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="]"/></Border>
-                    </UniformGrid>
-                    <UniformGrid Grid.Row="2" Rows="1" Columns="12">
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="CAPS"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="A"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="S"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="D"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="F"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="G"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="H"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="J"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="K"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="L"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text=";"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ENTER"/></Border>
-                    </UniformGrid>
-                    <UniformGrid Grid.Row="3" Rows="1" Columns="10">
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="CTRL"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="WIN"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ALT"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="SPACE"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="ALT"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="FN"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="CTRL"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="LEFT"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="DOWN"/></Border>
-                        <Border Style="{StaticResource KeyCapStyle}"><TextBlock Text="RIGHT"/></Border>
-                    </UniformGrid>
-                </Grid>
-            </Border>
+            <Image Source="/Assets/Devices/Keyboards/hero-keyboard.png"
+                   MaxWidth="780"
+                   Stretch="Uniform"
+                   RenderOptions.BitmapScalingMode="HighQuality"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
         </Grid>
 
         <Border Grid.Row="1" Grid.Column="2" Margin="22,58,0,0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
@@ -124,25 +65,25 @@
                 <UniformGrid Columns="6">
                     <Button x:Name="KeyboardWooting" Tag="Wooting 60HE" Click="Device_Click" Margin="0,0,12,0" Padding="12">
                         <StackPanel>
-                            <Border Height="82" Background="#151519" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="8"><TextBlock Text="60HE" Foreground="{StaticResource AccentBrush}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <Border Height="82" Background="#151519" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="8"><Image Source="/Assets/Devices/Keyboards/wooting-60he.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border>
                             <TextBlock Text="Wooting 60HE" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                             <TextBlock Text="Analog Rapid Trigger" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Tag="DrunkDeer A75" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel><Border Height="82" Background="#2A2624" CornerRadius="8"><TextBlock Text="A75" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="DrunkDeer A75" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="75% Gasket Mount" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                        <StackPanel><Border Height="82" Background="#2A2624" CornerRadius="8"><Image Source="/Assets/Devices/Keyboards/drunkdeer-a75.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border><TextBlock Text="DrunkDeer A75" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="75% Gasket Mount" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
                     </Button>
                     <Button Tag="HyperX Alloy Origins" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel><Border Height="82" Background="#151519" CornerRadius="8"><TextBlock Text="HX" Foreground="{StaticResource AccentBrush}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="HyperX Alloy" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="TKL Mechanical" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                        <StackPanel><Border Height="82" Background="#151519" CornerRadius="8"><Image Source="/Assets/Devices/Keyboards/hyperx-alloy-origins.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border><TextBlock Text="HyperX Alloy" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="TKL Mechanical" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
                     </Button>
                     <Button Tag="Redragon Fizz" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel><Border Height="82" Background="#202026" CornerRadius="8"><TextBlock Text="FIZZ" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Redragon Fizz" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="60% Mechanical" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                        <StackPanel><Border Height="82" Background="#202026" CornerRadius="8"><Image Source="/Assets/Devices/Keyboards/redragon-fizz.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border><TextBlock Text="Redragon Fizz" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="60% Mechanical" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
                     </Button>
                     <Button Tag="Anne Pro 2" Click="Device_Click" Margin="0,0,12,0" Padding="12">
-                        <StackPanel><Border Height="82" Background="#EAEAEA" CornerRadius="8"><TextBlock Text="AP2" Foreground="#111" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Anne Pro 2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="60% Bluetooth" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                        <StackPanel><Border Height="82" Background="#EAEAEA" CornerRadius="8"><Image Source="/Assets/Devices/Keyboards/anne-pro-2.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border><TextBlock Text="Anne Pro 2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="60% Bluetooth" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
                     </Button>
                     <Button Tag="Keychron K2" Click="Device_Click" Padding="12">
-                        <StackPanel><Border Height="82" Background="#211F1D" CornerRadius="8"><TextBlock Text="K2" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Keychron K2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="75% Wireless" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
+                        <StackPanel><Border Height="82" Background="#211F1D" CornerRadius="8"><Image Source="/Assets/Devices/Keyboards/keychron-k2.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Margin="4"/></Border><TextBlock Text="Keychron K2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/><TextBlock Text="75% Wireless" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/></StackPanel>
                     </Button>
                 </UniformGrid>
             </StackPanel>
