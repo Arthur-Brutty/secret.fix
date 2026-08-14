@@ -25,4 +25,10 @@ public partial class AccountView : UserControl
     private void SignOut_Click(object sender, System.Windows.RoutedEventArgs e) => SignOutRequested?.Invoke(this, EventArgs.Empty);
 
     private void Fullscreen_Click(object sender, System.Windows.RoutedEventArgs e) => FullscreenRequested?.Invoke(this, EventArgs.Empty);
+
+    private void ViewPlans_Click(object sender, System.Windows.RoutedEventArgs e)
+        => PlansPanel.Visibility = System.Windows.Visibility.Visible;
+
+    private void ClosePlans_Click(object sender, System.Windows.RoutedEventArgs e)
+        => PlansPanel.Visibility = System.Windows.Visibility.Collapsed;
 }

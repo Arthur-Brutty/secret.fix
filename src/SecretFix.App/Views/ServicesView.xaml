@@ -6,16 +6,19 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel>
-            <TextBlock Text="Serviços" Style="{StaticResource H1TextStyle}"/>
-            <TextBlock Text="Ajustes do Windows e sistema, sempre reversíveis" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
-        </StackPanel>
+        <Grid>
+            <StackPanel>
+                <TextBlock Text="Serviços" Style="{StaticResource H1TextStyle}"/>
+                <TextBlock Text="Preferências experimentais; nenhuma alteração é aplicada nesta versão" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
+            </StackPanel>
+            <TextBlock x:Name="LockText" HorizontalAlignment="Right" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+        </Grid>
         <ScrollViewer Grid.Row="1" Margin="0,24,0,0">
             <StackPanel>
-                <CheckBox Content="BACKGROUND APPS - Experimental" Style="{StaticResource OptionToggleStyle}" Checked="Checked"/>
-                <CheckBox Content="GAME BAR - Em desenvolvimento" Style="{StaticResource OptionToggleStyle}" Checked="Checked"/>
-                <CheckBox Content="PLANO DE ENERGIA - Experimental" Style="{StaticResource OptionToggleStyle}" Checked="Checked"/>
-                <CheckBox Content="SERVIÇOS OPCIONAIS - Requer confirmação futura" Style="{StaticResource OptionToggleStyle}" Checked="Checked"/>
+                <CheckBox x:Name="BackgroundApps" Content="BACKGROUND APPS - Experimental" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="GameBar" Content="GAME BAR - Em desenvolvimento" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="PowerPlan" Content="PLANO DE ENERGIA - Experimental" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="OptionalServices" Content="SERVIÇOS OPCIONAIS - Requer confirmação futura" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
                 <Border Style="{StaticResource CardBorderStyle}" Padding="18" Margin="0,18,0,0">
                     <TextBlock Text="Segurança preservada: esta tela não desativa Defender, Windows Update, firewall, serviços essenciais, HPET ou BCD. Ações reais futuras exigirão snapshot, backup, validação e log." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"/>
                 </Border>

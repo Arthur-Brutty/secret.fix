@@ -6,10 +6,13 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel>
-            <TextBlock Text="Display" Style="{StaticResource H1TextStyle}"/>
-            <TextBlock Text="Presets visuais preparados para API segura futura" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
-        </StackPanel>
+        <Grid>
+            <StackPanel>
+                <TextBlock Text="Display" Style="{StaticResource H1TextStyle}"/>
+                <TextBlock Text="Perfis locais; nenhuma alteração ocorre ao abrir esta página" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
+            </StackPanel>
+            <TextBlock x:Name="LockText" HorizontalAlignment="Right" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+        </Grid>
         <Grid Grid.Row="1" Margin="0,24,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -19,21 +22,22 @@
                 <StackPanel>
                     <TextBlock Text="PRESETS" FontWeight="SemiBold"/>
                     <UniformGrid Columns="4" Margin="0,14,0,20">
-                        <Button Content="NORMAL" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
-                        <Button Content="FPS" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
-                        <Button Content="VIBRANTE" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
-                        <Button Content="CUSTOM" Style="{StaticResource PrimaryButtonStyle}" Click="Preset_Click"/>
+                        <Button x:Name="NormalButton" Content="NORMAL" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
+                        <Button x:Name="FpsButton" Content="FPS" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
+                        <Button x:Name="VibrantButton" Content="VIBRANTE" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
+                        <Button x:Name="CustomButton" Content="CUSTOM" Style="{StaticResource SecondaryButtonStyle}" Click="Preset_Click"/>
                     </UniformGrid>
                     <TextBlock x:Name="SatText" Text="Saturação: 50" Foreground="{StaticResource MutedBrush}"/><Slider x:Name="SatSlider" Style="{StaticResource ThinSliderStyle}" Minimum="0" Maximum="100" Value="50" ValueChanged="Slider_ValueChanged"/>
                     <TextBlock x:Name="TempText" Text="Temperatura: 50" Foreground="{StaticResource MutedBrush}"/><Slider x:Name="TempSlider" Style="{StaticResource ThinSliderStyle}" Minimum="0" Maximum="100" Value="50" ValueChanged="Slider_ValueChanged"/>
                     <TextBlock x:Name="GammaText" Text="Gamma: 50" Foreground="{StaticResource MutedBrush}"/><Slider x:Name="GammaSlider" Style="{StaticResource ThinSliderStyle}" Minimum="0" Maximum="100" Value="50" ValueChanged="Slider_ValueChanged"/>
+                    <Button x:Name="ApplyDisplayButton" Content="APLICAR AO DISPLAY" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right" Margin="0,18,0,0" Click="Apply_Click"/>
                 </StackPanel>
             </Border>
             <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}" Padding="18" Margin="20,0,0,0">
                 <StackPanel>
                     <TextBlock Text="STATUS" FontWeight="SemiBold"/>
-                    <TextBlock Text="Em desenvolvimento" Foreground="{StaticResource AccentBrush}" Margin="0,12,0,0"/>
-                    <TextBlock Text="Nenhuma alteração real é aplicada sem API segura. Esta versão mantém apenas preview de valores e presets." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,12,0,0"/>
+                    <TextBlock x:Name="SupportText" Text="NÃO SUPORTADO NESTE DISPOSITIVO" Foreground="{StaticResource AccentBrush}" Margin="0,12,0,0" TextWrapping="Wrap"/>
+                    <TextBlock Text="Saturação: NÃO SUPORTADO (depende do driver).&#x0a;&#x0a;Temperatura: NÃO SUPORTADO (depende do monitor/ICC).&#x0a;&#x0a;Gamma: EXPERIMENTAL; não aplicada nesta versão por não haver restauração genérica confiável em todos os monitores." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,12,0,0"/>
                 </StackPanel>
             </Border>
         </Grid>

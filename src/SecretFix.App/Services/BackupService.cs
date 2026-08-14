@@ -6,9 +6,16 @@ namespace SecretFix.Services;
 
 public sealed class BackupService
 {
-    private readonly string _folder = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "SecretFix", "backups");
+    private readonly string _folder;
+    private readonly AppLogService _log;
+
+    public BackupService(AppLogService? log = null, string? folder = null)
+    {
+        _log = log ?? new AppLogService();
+        _folder = folder ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "SecretFix", "backups");
+    }
 
     public string SaveMouse(MouseSnapshot snapshot)
         => Save("mouse", snapshot);
@@ -35,14 +42,26 @@ public sealed class BackupService
         if (!Directory.Exists(_folder))
             return default;
 
-        var latest = Directory
+        var candidates = Directory
             .EnumerateFiles(_folder, $"{prefix}-*.json")
-            .OrderByDescending(File.GetLastWriteTimeUtc)
-            .FirstOrDefault();
+            .OrderByDescending(File.GetLastWriteTimeUtc);
 
-        if (latest is null)
-            return default;
+        foreach (var candidate in candidates)
+        {
+            try
+            {
+                var value = JsonSerializer.Deserialize<T>(File.ReadAllText(candidate));
+                if (value is not null)
+                    return value;
 
-        return JsonSerializer.Deserialize<T>(File.ReadAllText(latest));
+                _log.Info($"Backup ignored because it was empty or invalid. Path={candidate}");
+            }
+            catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+            {
+                _log.Error($"Backup ignored because it could not be read. Path={candidate}", ex);
+            }
+        }
+
+        return default;
     }
 }

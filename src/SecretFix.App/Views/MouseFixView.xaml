@@ -14,12 +14,12 @@
                 <TextBlock Text="Configuração avançada de precisão e resposta" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
                 <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                     <TextBlock x:Name="DetectedMouseText" Text="Deteccao: aguardando..." Foreground="{StaticResource MutedBrush}" FontSize="12" VerticalAlignment="Center"/>
-                    <Button Content="DETECTAR NOVAMENTE" Style="{StaticResource SecondaryButtonStyle}" Height="30" Padding="12,4" Margin="14,0,0,0" Click="DetectAgain_Click"/>
+                    <Button x:Name="DetectMouseButton" Content="DETECTAR NOVAMENTE" Style="{StaticResource SecondaryButtonStyle}" Height="30" Padding="12,4" Margin="14,0,0,0" Click="DetectAgain_Click"/>
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
-                <Button Content="RESTAURAR" Style="{StaticResource SecondaryButtonStyle}" Click="RestoreLatest_Click"/>
+                <Button x:Name="ApplyMouseButton" Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
+                <Button x:Name="RestoreMouseButton" Content="RESTAURAR" Style="{StaticResource SecondaryButtonStyle}" Click="RestoreLatest_Click"/>
             </StackPanel>
         </Grid>
 
@@ -31,18 +31,18 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
-                <CheckBox x:Name="MousePrecision" Content="MOUSE PRECISION" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox x:Name="PerformanceBoost" Content="PERFORMANCE BOOST" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox x:Name="Tracking" Content="TRACKING" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox x:Name="Sensi" Content="SENSI" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox x:Name="Flick" Content="FLICK" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox x:Name="HalfMs" Content="0.5MS EXPERIMENTAL" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox x:Name="MousePrecision" Content="MOUSE PRECISION" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="PerformanceBoost" Content="PERFORMANCE BOOST" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="Tracking" Content="TRACKING" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="Sensi" Content="SENSI" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="Flick" Content="FLICK" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="HalfMs" Content="0.5MS EXPERIMENTAL" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
             </StackPanel>
 
             <Grid Grid.Column="1">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image x:Name="HeroMouseImage"
-                           Source="/Assets/Devices/Mice/hero-logitech-g.png"
+                           Source="/Assets/Devices/Mice/generic-mouse.png"
                            Height="350"
                            Stretch="Uniform"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -52,12 +52,12 @@
             </Grid>
 
             <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="20,0,0,0">
-                <CheckBox Content="REGISTROS MOUSE" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox Content="ISLC / RAM" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox Content="SENSI X/Y" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox Content="FLAGS" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox Content="ACCESSIBILITY" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox Content="BOOST FIVEM" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox x:Name="RegistryVisual" Content="REGISTROS MOUSE" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="IslcVisual" Content="ISLC / RAM" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="SensitivityXY" Content="SENSI X/Y" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="FlagsVisual" Content="FLAGS" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="AccessibilityVisual" Content="ACCESSIBILITY" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="FiveMBoostVisual" Content="BOOST FIVEM" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
             </StackPanel>
         </Grid>
 
@@ -79,17 +79,9 @@
                 </Grid>
                 <ScrollViewer x:Name="MouseScroll" Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" Margin="0,12,0,0">
                     <StackPanel Orientation="Horizontal">
-                        <Button x:Name="MouseLogitech" Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/logitech-g-pro-x.png|Logitech|G Pro X Superlight 2" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/logitech-g-pro-x.png|Logitech|G Pro X Superlight" Click="Device_Click"/>
+                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/logitech-g-pro-x.png|Logitech|G Pro X Superlight 2" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/razer-viper-v3.png|Razer|Viper V3 Pro" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Razer|DeathAdder V3" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Logitech|G502 X" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/finalmouse-ultralightx.png|Finalmouse|Starlight" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/zowie-ec2cw.png|Zowie|FK2" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/lamzu-atlantis.png|Lamzu|Atlantis" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Pulsar|X2H" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|Attack Shark|X3" Click="Device_Click"/>
-                        <Button x:Name="MouseGeneric" Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Branding/secret-fix-logo.png|secret.fix|Generic" Click="Device_Click"/>
+                        <Button x:Name="MouseGeneric" Style="{StaticResource DeviceButtonStyle}" Tag="/Assets/Devices/Mice/generic-mouse.png|secret.fix|Generic" Click="Device_Click"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using SecretFix.Core;
 using SecretFix.Infrastructure.Windows;
 using SecretFix.Services;
+using SecretFix.State;
 
 namespace SecretFix.Views;
 
@@ -15,19 +16,25 @@ public partial class KeyboardFixView : UserControl
     private readonly DeviceDetectionService _deviceDetection;
     private readonly BackupService _backup;
     private readonly AppLogService _log;
+    private readonly SettingsService _settings;
+    private readonly bool _allowed;
+    private readonly PlanTier _minimumPlan;
     private KeyboardSnapshot? _sessionSnapshot;
     private Button? _selectedDevice;
-    private bool _suppressSelectionToast;
+    private bool _isReady;
 
-    public KeyboardFixView(BackupService backup, AppLogService log)
+    public KeyboardFixView(BackupService backup, AppLogService log, SettingsService settings, bool allowed, PlanTier minimumPlan)
     {
-        InitializeComponent();
         _backup = backup;
         _log = log;
+        _settings = settings;
+        _allowed = allowed;
+        _minimumPlan = minimumPlan;
         _deviceDetection = new DeviceDetectionService(log);
+        InitializeComponent();
         BuildDeviceCards();
-        SelectDevice(KeyboardWooting);
-        Loaded += async (_, _) => await DetectAsync();
+        LoadState();
+        _isReady = true;
     }
 
     private void BuildDeviceCards()
@@ -80,6 +87,12 @@ public partial class KeyboardFixView : UserControl
 
     private void Apply_Click(object sender, RoutedEventArgs e)
     {
+        if (!_allowed)
+        {
+            NotificationService.Show($"TecladoFix requer {_minimumPlan.ToString().ToUpperInvariant()}+.");
+            return;
+        }
+
         try
         {
             var before = _keyboard.ReadKeyboard();
@@ -87,6 +100,8 @@ public partial class KeyboardFixView : UserControl
             var backupPath = _backup.SaveKeyboard(before);
 
             _keyboard.ApplyGamingProfile(
+                minimumDelay: MinimumDelay.IsChecked == true,
+                maximumRepeat: MaximumRepeat.IsChecked == true,
                 disableFilterKeys: FilterKeysOff.IsChecked == true,
                 disableStickyKeys: StickyKeysOff.IsChecked == true,
                 disableToggleKeys: ToggleKeysOff.IsChecked == true);
@@ -120,13 +135,9 @@ public partial class KeyboardFixView : UserControl
             SelectDevice(button);
     }
 
-    private void Option_Checked(object sender, RoutedEventArgs e)
-    {
-        if (sender is CheckBox box && box.Content is string label)
-            NotificationService.Show($"{ToTitle(label)} selecionado");
-    }
+    private void Option_Click(object sender, RoutedEventArgs e) => SaveState();
 
-    private void SelectDevice(Button button)
+    private void SelectDevice(Button button, bool automatic = false, bool persist = true)
     {
         if (button.Tag is not string tag)
             return;
@@ -146,8 +157,14 @@ public partial class KeyboardFixView : UserControl
         {
             HeroKeyboardImage.Source = new BitmapImage(new Uri(parts[0], UriKind.Relative));
             SelectedKeyboardText.Text = $"{parts[1]} {parts[2]}";
-            if (!_suppressSelectionToast)
-                DetectedKeyboardText.Text = $"Selecionado manualmente: {parts[1]} {parts[2]}";
+            DetectedKeyboardText.Text = automatic
+                ? $"Detectado automaticamente: {parts[1]} {parts[2]}"
+                : $"Selecionado manualmente: {parts[1]} {parts[2]}";
+            if (_isReady && persist)
+            {
+                _settings.Current.KeyboardFix.SelectedDeviceId = $"{parts[1]}|{parts[2]}";
+                _settings.Save();
+            }
         }
     }
 
@@ -167,7 +184,7 @@ public partial class KeyboardFixView : UserControl
             }
 
             var known = detected.KnownDevice ?? KnownDevices.GenericKeyboard;
-            SelectMatchingDevice(known);
+            SelectMatchingDevice(known, automatic: true);
             DetectedKeyboardText.Text = detected.IsExactMatch
                 ? $"Detectado automaticamente: {known.Manufacturer} {known.Model} (VID={detected.Vid} PID={detected.Pid})"
                 : "Teclado detectado: Dispositivo HID - modelo exato nao identificado";
@@ -179,7 +196,7 @@ public partial class KeyboardFixView : UserControl
         }
     }
 
-    private void SelectMatchingDevice(KnownDevice known)
+    private void SelectMatchingDevice(KnownDevice known, bool automatic, bool persist = true)
     {
         foreach (var button in FindVisualChildren<Button>(KeyboardScroll))
         {
@@ -191,16 +208,57 @@ public partial class KeyboardFixView : UserControl
                 string.Equals(parts[1], known.Manufacturer, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(parts[2], known.Model, StringComparison.OrdinalIgnoreCase))
             {
-                _suppressSelectionToast = true;
-                SelectDevice(button);
-                _suppressSelectionToast = false;
+                SelectDevice(button, automatic, persist);
                 return;
             }
         }
 
-        _suppressSelectionToast = true;
-        SelectDevice(KeyboardGeneric);
-        _suppressSelectionToast = false;
+        SelectDevice(KeyboardGeneric, automatic, persist);
+    }
+
+    private void LoadState()
+    {
+        var state = _settings.Current.KeyboardFix;
+        PrecisionProfile.IsChecked = state.PrecisionProfile;
+        MinimumDelay.IsChecked = state.MinimumDelay;
+        MaximumRepeat.IsChecked = state.MaximumRepeat;
+        FilterKeysOff.IsChecked = state.FilterKeysOff;
+        StickyKeysOff.IsChecked = state.StickyKeysOff;
+        ToggleKeysOff.IsChecked = state.ToggleKeysOff;
+        RegistryVisual.IsChecked = state.RegistryVisual;
+        GameModeVisual.IsChecked = state.GameModeVisual;
+        AccessibilityVisual.IsChecked = state.AccessibilityVisual;
+        FiveMBoostVisual.IsChecked = state.FiveMBoostVisual;
+        BackgroundServicesVisual.IsChecked = state.BackgroundServicesVisual;
+        UsbSelectiveSuspendVisual.IsChecked = state.UsbSelectiveSuspendVisual;
+
+        var parts = state.SelectedDeviceId.Split('|');
+        var known = parts.Length == 2
+            ? new KnownDevice(DeviceKind.Keyboard, parts[0], parts[1], "", "", "")
+            : KnownDevices.GenericKeyboard;
+        SelectMatchingDevice(known, automatic: false, persist: false);
+        DetectedKeyboardText.Text = $"Seleção salva: {SelectedKeyboardText.Text}";
+    }
+
+    private void SaveState()
+    {
+        if (!_isReady)
+            return;
+
+        var state = _settings.Current.KeyboardFix;
+        state.PrecisionProfile = PrecisionProfile.IsChecked == true;
+        state.MinimumDelay = MinimumDelay.IsChecked == true;
+        state.MaximumRepeat = MaximumRepeat.IsChecked == true;
+        state.FilterKeysOff = FilterKeysOff.IsChecked == true;
+        state.StickyKeysOff = StickyKeysOff.IsChecked == true;
+        state.ToggleKeysOff = ToggleKeysOff.IsChecked == true;
+        state.RegistryVisual = RegistryVisual.IsChecked == true;
+        state.GameModeVisual = GameModeVisual.IsChecked == true;
+        state.AccessibilityVisual = AccessibilityVisual.IsChecked == true;
+        state.FiveMBoostVisual = FiveMBoostVisual.IsChecked == true;
+        state.BackgroundServicesVisual = BackgroundServicesVisual.IsChecked == true;
+        state.UsbSelectiveSuspendVisual = UsbSelectiveSuspendVisual.IsChecked == true;
+        _settings.Save();
     }
 
     private void RestoreSnapshot(KeyboardSnapshot snapshot, string source)
@@ -252,8 +310,6 @@ public partial class KeyboardFixView : UserControl
         if (group.Children[1] is TranslateTransform translate)
             translate.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(translate.Y, 0, TimeSpan.FromMilliseconds(170)));
     }
-
-    private static string ToTitle(string value) => value.Length == 0 ? value : value[0] + value[1..].ToLowerInvariant();
 
     private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
     {

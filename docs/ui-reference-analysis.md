@@ -1,33 +1,52 @@
-# UI reference analysis - secret.fix v0.2
+# UI reference analysis — secret.fix v0.4
 
-## Source files
+## Fonte e método
 
-- Reference video found in the repository after fast-forwarding `main`: `docs/reference/precisionfix-v3.mp4.mp4`.
-- Intended final path: `docs/reference/precisionfix-v3.mp4`.
-- Shell metadata reports duration `00:01:28`; local `ffmpeg`/`ffprobe` are not installed and no Python video decoder is available, so frame extraction could not be performed locally.
-- Background video found in the repository after fast-forwarding `main`: `src/SecretFix.App/Assets/Backgrounds/red-galaxy.mp4.mp4`.
-- Intended final path: `src/SecretFix.App/Assets/Backgrounds/red-galaxy.mp4`.
-- Shell metadata reports background duration `00:01:02`; file size is about `22.4 MB`.
+- Vídeo: `docs/reference/precisionfix-v3.mp4`.
+- `ffprobe`: H.264, 1920 × 1080, 60 fps, duração de 88,932 s; áudio AAC presente no arquivo de referência.
+- `ffmpeg`: 18 frames extraídos em intervalos de 5 s, mais uma sequência detalhada entre 50 s e 78 s em intervalos de 2 s.
+- Páginas comparadas: MouseFix (~10–18 s e ~85 s), TecladoFix (~20 s), FiveM (~25 s), Flick (~30–38 s), Sensi (~40–52 s), Mira (~54–68 s), Serviços (~70 s) e Display (~72–82 s).
 
-## Visual observations
+## Estrutura observada
 
-The approved reference screenshots show a compact desktop utility, not a web dashboard. The window is wide but controlled, with a fixed left sidebar around 250-280 px and a content area that uses the remaining width. The main feeling is quiet, black, dense, and premium. Red is used for selected states, active toggles, narrow accents, progress, and notifications, not as a large surface color.
+O aplicativo de referência é uma janela desktop compacta, aproximadamente 16:9, com sidebar fixa estreita à esquerda e conteúdo denso à direita. A sidebar ocupa perto de um quinto da janela. O conteúdo usa fundo quase preto, cards com bordas finas e baixo contraste e uma cor de destaque reservada a seleção, estado ativo e avisos. No `secret.fix`, essa linguagem permanece preto/vermelho e não replica marca ou assets proprietários.
 
-The sidebar has the product name at the top, a small version label, an optimization progress card, vertical navigation, and a user card pinned to the bottom. Navigation rows are compact, icon-first, mostly transparent in the normal state, and only gain a darker panel plus subtle red border when selected. Hover states should be short and restrained.
+As páginas evitam grandes vazios e dashboards genéricos. Títulos ficam no topo, controles se alinham em linhas ou colunas curtas e o usuário/plano permanece no rodapé da sidebar. Hover e transições devem ser rápidos (aproximadamente 120–200 ms) e discretos.
 
-The Mouse page uses a three-part composition: options on the left, a large central device image, and system options on the right. The mouse must dominate the center, with enough vertical scale to feel like a product-focused utility. Notifications stack in the top-right. The device selector is a horizontal row at the bottom, with each card containing image, brand, and model entirely within the card.
+## MouseFix
 
-The Keyboard page mirrors Mouse, but the central keyboard is wide and large. Left and right option groups are visually lighter than full dashboards; the reference often uses simple text rows and compact checkboxes. Keyboard cards are wider than mouse cards, with the image taking the upper half and text safely contained below.
+- O mouse central aparece inteiro, vertical, com proporção preservada e altura visual próxima a metade da área útil da página.
+- O hero não toca as bordas e não usa um retângulo de imagem excessivamente largo; o canvas deve ser estável entre modelos, com o produto centralizado dentro dele.
+- As opções formam duas colunas laterais leves ao redor do mouse.
+- O seletor inferior é uma faixa horizontal de cards compactos. Cada card mantém foto, fabricante e modelo dentro dos limites.
+- Seleção usa borda de destaque; hover usa pequena elevação/escala sem deslocamento agressivo.
 
-Page density is high but not cramped. Headers use 20-24 px titles and smaller gray descriptions. Cards have fine borders, low-radius corners, dark surfaces, and minimal shadows. The overall layout should avoid giant gaps, oversized buttons, and generic KPI panels.
+## TecladoFix
 
-Animations should be fast: splash around one second, page transitions under 250 ms, hover/select transitions around 120-180 ms, and device-card lift/scale around 150-200 ms. The effect should make the app feel alive without turning into a neon/gamer interface.
+- O teclado é exibido inteiro e centralizado em um canvas horizontal, com largura suficiente para leitura do produto e sem crop.
+- As opções permanecem nas laterais, preservando a mesma hierarquia do MouseFix.
+- Cards de teclado precisam ser mais largos que os de mouse e usar imagens nítidas com margem consistente.
 
-## Adaptation for secret.fix
+## FiveM
 
-- Keep the `secret.fix` identity with black/red colors and no PrecisionFix branding.
-- Use `red-galaxy.mp4` as a subtle background behind a dark overlay.
-- Keep sidebar/cards highly opaque so text remains readable.
-- Preserve backend services and only connect real actions where existing safe Windows services support them.
-- Mark unsupported or not-yet-safe actions as visual, locked, experimental, or in development.
-- Preserve CORE/PULSE/APEX through `FeatureCatalog`; blocked features remain visible.
+- Há um card principal de launcher com ação evidente no canto direito e uma lista compacta de opções abaixo.
+- O botão de abrir o FiveM deve ser uma ação real; estados de processo/caminho ficam visíveis sem sugerir otimizações não implementadas.
+
+## Mira e Serviços
+
+- Mira usa card de introdução, aviso, seletor do overlay e controles em linhas compactas. Mudanças de preset devem alterar parâmetros reais, não apenas o estilo do botão.
+- Serviços aparece como lista simples de toggles. O estado ativo é fácil de ler e não deve desaparecer ao navegar.
+
+## Display
+
+- Display usa cards de preset no topo e sliders horizontais abaixo, em um único painel denso.
+- Presets e sliders conservam valores, mas nenhuma alteração real deve ocorrer somente ao abrir a página.
+- Onde não houver API genérica segura para saturação/temperatura/gamma, a UI deve dizer `Experimental` ou `Não suportado`, sem confirmação falsa de sucesso.
+
+## Decisões para v0.4
+
+- Preservar login, galáxia, fullscreen, sidebar e identidade preto/vermelho existentes.
+- Normalizar o canvas dos assets para manter escala visual semelhante, além de usar `Stretch=Uniform`.
+- Não usar logo nem foto de outro produto como substituto de um modelo anunciado; itens sem asset fiel usam visual Generic explícito.
+- Conectar as páginas ao estado compartilhado/persistente em vez de depender da instância da view.
+- Manter cards compactos, borda vermelha selecionada, hover com escala leve e textos integralmente dentro do card.

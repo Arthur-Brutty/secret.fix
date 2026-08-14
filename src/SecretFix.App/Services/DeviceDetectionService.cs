@@ -38,17 +38,23 @@ public sealed class DeviceDetectionService
             _log.Error($"Device detection failed. Kind={kind}", ex);
         }
 
+        devices = devices
+            .GroupBy(device => $"{device.Vid}|{device.Pid}|{device.ProductName}|{device.FriendlyName}", StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .OrderByDescending(device => device.IsExactMatch)
+            .ThenBy(device => device.DisplayName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        foreach (var device in devices.Take(12))
+            _log.Info($"Detected {kind} VID={device.Vid ?? "unknown"} PID={device.Pid ?? "unknown"} Manufacturer={device.Manufacturer} Product={device.ProductName} Friendly={device.FriendlyName} Exact={device.IsExactMatch}");
+
         if (devices.Count == 0)
-            devices.Add(CreateGeneric(kind));
+        {
+            _log.Info($"No exact {kind} device identity was available. Generic fallback selected.");
+            return [CreateGeneric(kind)];
+        }
 
-        foreach (var device in devices.Take(8))
-            _log.Info($"Detected {kind} VID={device.Vid ?? "unknown"} PID={device.Pid ?? "unknown"} Name={device.DisplayName} Exact={device.IsExactMatch}");
-
-        var exact = devices.FirstOrDefault(device => device.IsExactMatch);
-        if (exact is not null)
-            return [exact];
-
-        return [CreateGeneric(kind, devices.FirstOrDefault())];
+        return devices;
     }
 
     private void EnumerateRegistry(RegistryKey root, DeviceKind kind, List<DetectedDevice> devices, CancellationToken cancellationToken)
@@ -70,16 +76,20 @@ public sealed class DeviceDetectionService
                 var service = ReadString(instance, "Service");
                 var friendly = ReadString(instance, "FriendlyName");
                 var deviceDesc = ReadString(instance, "DeviceDesc");
+                var manufacturer = CleanName(ReadString(instance, "Mfg"));
                 if (!LooksLikeKind(kind, className, service, friendly, deviceDesc))
                     continue;
 
-                var (vid, pid) = ParseVidPid(hardwareKeyName);
+                var hardwareIds = instance.GetValue("HardwareID") as string[];
+                var identitySource = hardwareIds?.FirstOrDefault(id => VidPidRegex.IsMatch(id)) ?? hardwareKeyName;
+                var (vid, pid) = ParseVidPid(identitySource);
                 var known = KnownDevices.Match(kind, vid, pid);
+                var productName = !string.IsNullOrWhiteSpace(friendly) ? friendly : CleanName(deviceDesc);
                 devices.Add(new DetectedDevice(
                     kind,
-                    known?.Manufacturer ?? "",
-                    known?.Model ?? CleanName(deviceDesc),
-                    friendly,
+                    known?.Manufacturer ?? manufacturer,
+                    known?.Model ?? (string.IsNullOrWhiteSpace(productName) ? "Dispositivo HID" : productName),
+                    string.IsNullOrWhiteSpace(friendly) ? productName : friendly,
                     vid,
                     pid,
                     known,
@@ -101,7 +111,7 @@ public sealed class DeviceDetectionService
         };
     }
 
-    private static (string? Vid, string? Pid) ParseVidPid(string value)
+    public static (string? Vid, string? Pid) ParseVidPid(string value)
     {
         var match = VidPidRegex.Match(value);
         return match.Success
@@ -120,7 +130,14 @@ public sealed class DeviceDetectionService
 
     private static DetectedDevice CreateGeneric(DeviceKind kind, DetectedDevice? source = null)
     {
-        var known = kind == DeviceKind.Mouse ? KnownDevices.GenericMouse : KnownDevices.GenericKeyboard;
-        return new DetectedDevice(kind, "", source?.ProductName ?? known.Model, source?.FriendlyName ?? "Modelo exato nao identificado", source?.Vid, source?.Pid, known, false);
+        return new DetectedDevice(
+            kind,
+            source?.Manufacturer ?? "",
+            source?.ProductName ?? "Dispositivo HID",
+            source?.FriendlyName ?? "Modelo exato não identificado",
+            source?.Vid,
+            source?.Pid,
+            null,
+            false);
     }
 }

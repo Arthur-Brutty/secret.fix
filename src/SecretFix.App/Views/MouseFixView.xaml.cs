@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using SecretFix.Core;
 using SecretFix.Infrastructure.Windows;
 using SecretFix.Services;
+using SecretFix.State;
 
 namespace SecretFix.Views;
 
@@ -15,19 +16,21 @@ public partial class MouseFixView : UserControl
     private readonly DeviceDetectionService _deviceDetection;
     private readonly BackupService _backup;
     private readonly AppLogService _log;
+    private readonly SettingsService _settings;
     private MouseSnapshot? _sessionSnapshot;
     private Button? _selectedDevice;
-    private bool _suppressSelectionToast;
+    private bool _isReady;
 
-    public MouseFixView(BackupService backup, AppLogService log)
+    public MouseFixView(BackupService backup, AppLogService log, SettingsService settings)
     {
-        InitializeComponent();
         _backup = backup;
         _log = log;
+        _settings = settings;
         _deviceDetection = new DeviceDetectionService(log);
+        InitializeComponent();
         BuildDeviceCards();
-        SelectDevice(MouseLogitech);
-        Loaded += async (_, _) => await DetectAsync();
+        LoadState();
+        _isReady = true;
     }
 
     private void BuildDeviceCards()
@@ -124,13 +127,9 @@ public partial class MouseFixView : UserControl
             SelectDevice(button);
     }
 
-    private void Option_Checked(object sender, RoutedEventArgs e)
-    {
-        if (sender is CheckBox box && box.Content is string label)
-            NotificationService.Show($"{ToTitle(label)} selecionado");
-    }
+    private void Option_Click(object sender, RoutedEventArgs e) => SaveState();
 
-    private void SelectDevice(Button button)
+    private void SelectDevice(Button button, bool automatic = false, bool persist = true)
     {
         if (button.Tag is not string tag)
             return;
@@ -150,8 +149,14 @@ public partial class MouseFixView : UserControl
         {
             HeroMouseImage.Source = new BitmapImage(new Uri(parts[0], UriKind.Relative));
             SelectedMouseText.Text = $"{parts[1]} {parts[2]}";
-            if (!_suppressSelectionToast)
-                DetectedMouseText.Text = $"Selecionado manualmente: {parts[1]} {parts[2]}";
+            DetectedMouseText.Text = automatic
+                ? $"Detectado automaticamente: {parts[1]} {parts[2]}"
+                : $"Selecionado manualmente: {parts[1]} {parts[2]}";
+            if (_isReady && persist)
+            {
+                _settings.Current.MouseFix.SelectedDeviceId = $"{parts[1]}|{parts[2]}";
+                _settings.Save();
+            }
         }
     }
 
@@ -171,7 +176,7 @@ public partial class MouseFixView : UserControl
             }
 
             var known = detected.KnownDevice ?? KnownDevices.GenericMouse;
-            SelectMatchingDevice(known);
+            SelectMatchingDevice(known, automatic: true);
             DetectedMouseText.Text = detected.IsExactMatch
                 ? $"Detectado automaticamente: {known.Manufacturer} {known.Model} (VID={detected.Vid} PID={detected.Pid})"
                 : "Mouse detectado: Dispositivo HID - modelo exato nao identificado";
@@ -183,7 +188,7 @@ public partial class MouseFixView : UserControl
         }
     }
 
-    private void SelectMatchingDevice(KnownDevice known)
+    private void SelectMatchingDevice(KnownDevice known, bool automatic, bool persist = true)
     {
         foreach (var button in FindVisualChildren<Button>(MouseScroll))
         {
@@ -195,16 +200,57 @@ public partial class MouseFixView : UserControl
                 string.Equals(parts[1], known.Manufacturer, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(parts[2], known.Model, StringComparison.OrdinalIgnoreCase))
             {
-                _suppressSelectionToast = true;
-                SelectDevice(button);
-                _suppressSelectionToast = false;
+                SelectDevice(button, automatic, persist);
                 return;
             }
         }
 
-        _suppressSelectionToast = true;
-        SelectDevice(MouseGeneric);
-        _suppressSelectionToast = false;
+        SelectDevice(MouseGeneric, automatic, persist);
+    }
+
+    private void LoadState()
+    {
+        var state = _settings.Current.MouseFix;
+        MousePrecision.IsChecked = state.MousePrecision;
+        PerformanceBoost.IsChecked = state.PerformanceBoost;
+        Tracking.IsChecked = state.Tracking;
+        Sensi.IsChecked = state.Sensitivity;
+        Flick.IsChecked = state.Flick;
+        HalfMs.IsChecked = state.HalfMillisecondExperimental;
+        RegistryVisual.IsChecked = state.RegistryVisual;
+        IslcVisual.IsChecked = state.IslcVisual;
+        SensitivityXY.IsChecked = state.SensitivityXY;
+        FlagsVisual.IsChecked = state.FlagsVisual;
+        AccessibilityVisual.IsChecked = state.AccessibilityVisual;
+        FiveMBoostVisual.IsChecked = state.FiveMBoostVisual;
+
+        var parts = state.SelectedDeviceId.Split('|');
+        var known = parts.Length == 2
+            ? new KnownDevice(DeviceKind.Mouse, parts[0], parts[1], "", "", "")
+            : KnownDevices.GenericMouse;
+        SelectMatchingDevice(known, automatic: false, persist: false);
+        DetectedMouseText.Text = $"Seleção salva: {SelectedMouseText.Text}";
+    }
+
+    private void SaveState()
+    {
+        if (!_isReady)
+            return;
+
+        var state = _settings.Current.MouseFix;
+        state.MousePrecision = MousePrecision.IsChecked == true;
+        state.PerformanceBoost = PerformanceBoost.IsChecked == true;
+        state.Tracking = Tracking.IsChecked == true;
+        state.Sensitivity = Sensi.IsChecked == true;
+        state.Flick = Flick.IsChecked == true;
+        state.HalfMillisecondExperimental = HalfMs.IsChecked == true;
+        state.RegistryVisual = RegistryVisual.IsChecked == true;
+        state.IslcVisual = IslcVisual.IsChecked == true;
+        state.SensitivityXY = SensitivityXY.IsChecked == true;
+        state.FlagsVisual = FlagsVisual.IsChecked == true;
+        state.AccessibilityVisual = AccessibilityVisual.IsChecked == true;
+        state.FiveMBoostVisual = FiveMBoostVisual.IsChecked == true;
+        _settings.Save();
     }
 
     private void RestoreSnapshot(MouseSnapshot snapshot, string source)
@@ -256,8 +302,6 @@ public partial class MouseFixView : UserControl
         if (group.Children[1] is TranslateTransform translate)
             translate.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(translate.Y, 0, TimeSpan.FromMilliseconds(170)));
     }
-
-    private static string ToTitle(string value) => value.Length == 0 ? value : value[0] + value[1..].ToLowerInvariant();
 
     private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
     {

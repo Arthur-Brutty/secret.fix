@@ -13,10 +13,12 @@ namespace SecretFix;
 
 public partial class MainWindow : Window
 {
-    private readonly BackupService _backup = new();
-    private readonly AppLogService _log = new();
+    private readonly BackupService _backup;
+    private readonly AppLogService _log;
+    private readonly SettingsService _settings;
     private readonly ILicenseService _licenseService;
     private readonly LicenseInfo _license;
+    private readonly Dictionary<string, UserControl> _views = new(StringComparer.OrdinalIgnoreCase);
     private Button? _activeButton;
     private string _currentPage = "";
     private bool _isFullscreen;
@@ -25,6 +27,9 @@ public partial class MainWindow : Window
 
     public MainWindow(LicenseInfo license, ILicenseService licenseService)
     {
+        _log = new AppLogService();
+        _backup = new BackupService(_log);
+        _settings = new SettingsService(_log);
         InitializeComponent();
         _license = license;
         _licenseService = licenseService;
@@ -37,10 +42,10 @@ public partial class MainWindow : Window
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
         StartBackgroundVideo();
-        _log.Info($"secret.fix start. Version=v0.3-test; User={_license.Username}; Plan={_license.Plan}; Status={_license.Status}");
+        _log.Info($"secret.fix start. Version=v0.4-test; User={_license.Username}; Plan={_license.Plan}; Status={_license.Status}");
         UserText.Text = _license.Username;
         PlanText.Text = _license.Plan.ToString().ToUpperInvariant();
-        VersionText.Text = "v0.3 test build";
+        VersionText.Text = "v0.4 test build";
         ApplyFeatureGates();
         await RunSplashAsync();
         Navigate("Mouse");
@@ -49,6 +54,7 @@ public partial class MainWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         NotificationService.Requested -= ShowToast;
+        _settings.Save();
         CrosshairOverlayService.Close();
         GalaxyBackground.Stop();
         base.OnClosed(e);
@@ -110,19 +116,7 @@ public partial class MainWindow : Window
             var allowed = feature is null || FeatureCatalog.IsAllowed(_license.Plan, feature.Value);
             var minimumPlan = feature is null ? PlanTier.Core : FeatureCatalog.MinimumPlan(feature.Value);
 
-            UserControl view = page switch
-            {
-                "Mouse" => new MouseFixView(_backup, _log),
-                "Keyboard" => new KeyboardFixView(_backup, _log),
-                "FiveM" => new FiveMView(allowed, minimumPlan, _log),
-                "Flick" => new FlickTrainerView(allowed, minimumPlan),
-                "Sensi" => new SensiView(_backup, _log, allowed, minimumPlan),
-                "Aim" => new AimView(allowed, minimumPlan),
-                "Services" => new ServicesView(allowed, minimumPlan),
-                "Display" => new DisplayView(allowed, minimumPlan),
-                "Account" => CreateAccountView(),
-                _ => new PlaceholderView(page, minimumPlan, allowed)
-            };
+            var view = GetOrCreateView(page, allowed, minimumPlan);
 
             var fadeOut = new DoubleAnimation(MainContent.Opacity, 0, TimeSpan.FromMilliseconds(80));
             fadeOut.Completed += (_, _) =>
@@ -143,6 +137,29 @@ public partial class MainWindow : Window
             _log.Error($"Navigation failed. Page={page}", ex);
             NotificationService.Show($"Falha ao abrir {page}. Erro registrado.");
         }
+    }
+
+    private UserControl GetOrCreateView(string page, bool allowed, PlanTier minimumPlan)
+    {
+        if (_views.TryGetValue(page, out var cached))
+            return cached;
+
+        UserControl view = page switch
+        {
+            "Mouse" => new MouseFixView(_backup, _log, _settings),
+            "Keyboard" => new KeyboardFixView(_backup, _log, _settings, allowed, minimumPlan),
+            "FiveM" => new FiveMView(allowed, minimumPlan, _log, _settings),
+            "Flick" => new FlickTrainerView(allowed, minimumPlan),
+            "Sensi" => new SensiView(_backup, _log, allowed, minimumPlan),
+            "Aim" => new AimView(allowed, minimumPlan, _settings, _log),
+            "Services" => new ServicesView(allowed, minimumPlan, _settings, _log),
+            "Display" => new DisplayView(allowed, minimumPlan, _settings, _log),
+            "Account" => CreateAccountView(),
+            _ => new PlaceholderView(page, minimumPlan, allowed)
+        };
+
+        _views[page] = view;
+        return view;
     }
 
     private AccountView CreateAccountView()
@@ -171,7 +188,7 @@ public partial class MainWindow : Window
         badge.Text = allowed ? "" : FeatureCatalog.MinimumPlan(feature) switch
         {
             PlanTier.Pulse => "PULSE+",
-            PlanTier.Apex => "APEX",
+            PlanTier.Apex => "APEX ONLY",
             _ => "CORE"
         };
     }

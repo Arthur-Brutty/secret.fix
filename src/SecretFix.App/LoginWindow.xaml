@@ -21,7 +21,7 @@
                 <Border Style="{StaticResource CardBorderStyle}" Width="360" Padding="24" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel>
                         <TextBlock Text="secret.fix" FontSize="32" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                        <TextBlock Text="v0.3 test build" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Center" Margin="0,6,0,26"/>
+                        <TextBlock Text="v0.4 test build" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Center" Margin="0,6,0,26"/>
 
                         <TextBlock Text="USERNAME" Foreground="{StaticResource MutedBrush}" FontSize="11" FontWeight="SemiBold"/>
                         <TextBox x:Name="UsernameBox" Height="38" Margin="0,8,0,16" Text="SecretUser_01"/>

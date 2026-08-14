@@ -7,17 +7,20 @@
             <ColumnDefinition Width="330"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Text="Mira" Style="{StaticResource H1TextStyle}"/>
-            <TextBlock Text="Preview desktop legítimo, sem injeção no FiveM" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,22"/>
+            <DockPanel>
+                <TextBlock Text="Mira" Style="{StaticResource H1TextStyle}"/>
+                <TextBlock x:Name="LockText" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+            </DockPanel>
+            <TextBlock Text="Overlay desktop legítimo, sem injeção no FiveM" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,22"/>
             <UniformGrid Columns="4" Margin="0,0,0,18">
-                <Button Content="BASIC" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
-                <Button Content="MEDIUM" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
-                <Button Content="HIGH" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
-                <Button Content="CUSTOM" Style="{StaticResource PrimaryButtonStyle}" Click="Preset_Click"/>
+                <Button x:Name="BasicButton" Content="BASIC" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
+                <Button x:Name="MediumButton" Content="MEDIUM" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
+                <Button x:Name="HighButton" Content="HIGH" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Click="Preset_Click"/>
+                <Button x:Name="CustomButton" Content="CUSTOM" Style="{StaticResource SecondaryButtonStyle}" Click="Preset_Click"/>
             </UniformGrid>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,18">
-                <Button Content="ATIVAR MIRA" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Activate_Click"/>
-                <Button Content="DESATIVAR MIRA" Style="{StaticResource SecondaryButtonStyle}" Click="Deactivate_Click"/>
+                <Button x:Name="ActivateAimButton" Content="ATIVAR MIRA" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Activate_Click"/>
+                <Button x:Name="DeactivateAimButton" Content="DESATIVAR MIRA" Style="{StaticResource SecondaryButtonStyle}" Click="Deactivate_Click"/>
             </StackPanel>
             <Border Style="{StaticResource CardBorderStyle}" Padding="18">
                 <StackPanel>
@@ -31,7 +34,6 @@
                         <ComboBoxItem Content="Red"/>
                         <ComboBoxItem Content="White"/>
                     </ComboBox>
-                    <TextBlock Text="Smoothness" Foreground="{StaticResource MutedBrush}"/><Slider Style="{StaticResource ThinSliderStyle}" Minimum="0" Maximum="100" Value="45"/>
                 </StackPanel>
             </Border>
         </StackPanel>
@@ -44,7 +46,7 @@
                     <Line x:Name="TopLine" Stroke="{StaticResource AccentBrush}" StrokeThickness="2" X1="125" Y1="78" X2="125" Y2="112"/>
                     <Line x:Name="BottomLine" Stroke="{StaticResource AccentBrush}" StrokeThickness="2" X1="125" Y1="138" X2="125" Y2="172"/>
                 </Canvas>
-                <TextBlock Text="Visual / Em desenvolvimento" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="OverlayStatusText" Text="Overlay inativo" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
             </Grid>
         </Border>
     </Grid>

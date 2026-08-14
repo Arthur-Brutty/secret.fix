@@ -48,10 +48,17 @@ public sealed class WindowsKeyboardService
         return new KeyboardSnapshot(speed, delay, sticky.Flags, toggle.Flags, filter.Flags, filter.WaitMs, filter.DelayMs, filter.RepeatMs, filter.BounceMs);
     }
 
-    public void ApplyGamingProfile(bool disableFilterKeys, bool disableStickyKeys, bool disableToggleKeys)
+    public void ApplyGamingProfile(
+        bool minimumDelay,
+        bool maximumRepeat,
+        bool disableFilterKeys,
+        bool disableStickyKeys,
+        bool disableToggleKeys)
     {
-        SetSpeed(31);
-        SetDelay(0);
+        if (maximumRepeat)
+            SetSpeed(31);
+        if (minimumDelay)
+            SetDelay(0);
         if (disableStickyKeys)
             SetStickyKeys(false);
         if (disableToggleKeys)
@@ -149,4 +156,11 @@ public sealed record KeyboardSnapshot(
     int FilterWaitMs,
     int FilterDelayMs,
     int FilterRepeatMs,
-    int FilterBounceMs);
+    int FilterBounceMs)
+{
+    private const int EnabledFlag = 0x00000001;
+
+    public bool StickyKeysEnabled => (StickyFlags & EnabledFlag) != 0;
+    public bool ToggleKeysEnabled => (ToggleFlags & EnabledFlag) != 0;
+    public bool FilterKeysEnabled => (FilterFlags & EnabledFlag) != 0;
+}

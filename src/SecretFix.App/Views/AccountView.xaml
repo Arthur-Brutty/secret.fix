@@ -22,9 +22,9 @@
                     </Border>
                     <TextBlock x:Name="UsernameText" FontSize="24" FontWeight="SemiBold" Margin="0,18,0,0"/>
                     <TextBlock x:Name="StatusText" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" Margin="0,6,0,0"/>
-                    <Button Content="VIEW PLANS" Style="{StaticResource PrimaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,26,0,0"/>
-                    <Button Content="TELA CHEIA" Style="{StaticResource SecondaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,10,0,0" Click="Fullscreen_Click"/>
-                    <Button Content="SAIR DA CONTA" Style="{StaticResource SecondaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,10,0,0" Click="SignOut_Click"/>
+                    <Button x:Name="ViewPlansButton" Content="VIEW PLANS" Style="{StaticResource PrimaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,26,0,0" Click="ViewPlans_Click"/>
+                    <Button x:Name="FullscreenButton" Content="TELA CHEIA" Style="{StaticResource SecondaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,10,0,0" Click="Fullscreen_Click"/>
+                    <Button x:Name="LogoutButton" Content="SAIR DA CONTA" Style="{StaticResource SecondaryButtonStyle}" Width="140" HorizontalAlignment="Left" Margin="0,10,0,0" Click="SignOut_Click"/>
                 </StackPanel>
                 <UniformGrid Grid.Column="1" Columns="2">
                     <StackPanel Margin="0,0,20,20"><TextBlock Text="License" Foreground="{StaticResource MutedBrush}" FontSize="11"/><TextBlock x:Name="LicenseText" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel>
@@ -37,6 +37,24 @@
                     <StackPanel Margin="0,0,20,20"><TextBlock Text="Last Login" Foreground="{StaticResource MutedBrush}" FontSize="11"/><TextBlock Text="Local dev session" FontWeight="SemiBold"/></StackPanel>
                     <StackPanel Margin="0,0,20,20"><TextBlock Text="Upgrade Plan" Foreground="{StaticResource MutedBrush}" FontSize="11"/><TextBlock Text="CORE / PULSE / APEX" FontWeight="SemiBold"/></StackPanel>
                 </UniformGrid>
+            </Grid>
+        </Border>
+        <Border x:Name="PlansPanel" Grid.RowSpan="2" Panel.ZIndex="10" Background="#FA08080B" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="10" Padding="24" Margin="22" Visibility="Collapsed">
+            <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <StackPanel>
+                    <TextBlock Text="PLANOS SECRET.FIX" FontSize="24" FontWeight="SemiBold"/>
+                    <TextBlock Text="Um aplicativo; a licença determina os recursos disponíveis." Style="{StaticResource CaptionTextStyle}" Margin="0,6,0,0"/>
+                </StackPanel>
+                <UniformGrid Grid.Row="1" Columns="3" Margin="0,22,0,18">
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="16" Margin="0,0,10,0"><StackPanel><TextBlock Text="CORE" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="Bold"/><TextBlock Text="Mouse e input essencial" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,14"/><TextBlock Text="• MouseFix&#x0a;• Sensibilidade&#x0a;• Backup e restauração&#x0a;• Seleção de mouse" LineHeight="27"/></StackPanel></Border>
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="16" Margin="0,0,10,0"><StackPanel><TextBlock Text="PULSE" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="Bold"/><TextBlock Text="Tudo do CORE, mais" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,14"/><TextBlock Text="• TecladoFix&#x0a;• FiveM Launcher&#x0a;• Serviços&#x0a;• Automações seguras" LineHeight="27"/></StackPanel></Border>
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="16"><StackPanel><TextBlock Text="APEX" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="Bold"/><TextBlock Text="Tudo do PULSE, mais" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,14"/><TextBlock Text="• Flick Trainer&#x0a;• Mira desktop&#x0a;• Display experimental&#x0a;• Diagnóstico avançado" LineHeight="27"/></StackPanel></Border>
+                </UniformGrid>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Pagamento não implementado nesta versão." Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <Button x:Name="ClosePlansButton" Content="FECHAR" Style="{StaticResource PrimaryButtonStyle}" Click="ClosePlans_Click"/>
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>

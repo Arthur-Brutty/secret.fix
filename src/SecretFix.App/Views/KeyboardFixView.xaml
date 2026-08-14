@@ -14,12 +14,12 @@
                 <TextBlock Text="Configuração avançada de precisão e resposta" Style="{StaticResource CaptionTextStyle}" Margin="0,7,0,0"/>
                 <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                     <TextBlock x:Name="DetectedKeyboardText" Text="Deteccao: aguardando..." Foreground="{StaticResource MutedBrush}" FontSize="12" VerticalAlignment="Center"/>
-                    <Button Content="DETECTAR NOVAMENTE" Style="{StaticResource SecondaryButtonStyle}" Height="30" Padding="12,4" Margin="14,0,0,0" Click="DetectAgain_Click"/>
+                    <Button x:Name="DetectKeyboardButton" Content="DETECTAR NOVAMENTE" Style="{StaticResource SecondaryButtonStyle}" Height="30" Padding="12,4" Margin="14,0,0,0" Click="DetectAgain_Click"/>
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
-                <Button Content="RESTAURAR" Style="{StaticResource SecondaryButtonStyle}" Click="RestoreLatest_Click"/>
+                <Button x:Name="ApplyKeyboardButton" Content="APLICAR" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Click="Apply_Click"/>
+                <Button x:Name="RestoreKeyboardButton" Content="RESTAURAR" Style="{StaticResource SecondaryButtonStyle}" Click="RestoreLatest_Click"/>
             </StackPanel>
         </Grid>
 
@@ -31,18 +31,18 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,18,0">
-                <CheckBox Content="PERFIL DE PRECISÃO" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox Content="DELAY MÍNIMO" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox Content="REPETIÇÃO MÁXIMA" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox x:Name="FilterKeysOff" Content="FILTER KEYS OFF" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox x:Name="StickyKeysOff" Content="STICKY KEYS OFF" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox x:Name="ToggleKeysOff" Content="TOGGLE KEYS OFF" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox x:Name="PrecisionProfile" Content="PERFIL DE PRECISÃO" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="MinimumDelay" Content="DELAY MÍNIMO" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="MaximumRepeat" Content="REPETIÇÃO MÁXIMA" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="FilterKeysOff" Content="FILTER KEYS OFF" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="StickyKeysOff" Content="STICKY KEYS OFF" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="ToggleKeysOff" Content="TOGGLE KEYS OFF" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
             </StackPanel>
 
             <Grid Grid.Column="1">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image x:Name="HeroKeyboardImage"
-                           Source="/Assets/Devices/Keyboards/hero-keyboard.png"
+                           Source="/Assets/Devices/Keyboards/generic-keyboard.png"
                            Height="260"
                            Stretch="Uniform"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -51,12 +51,12 @@
             </Grid>
 
             <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="18,0,0,0">
-                <CheckBox Content="REGISTRO TECLADO" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox Content="MODO JOGO" Style="{StaticResource OptionToggleStyle}" IsChecked="True" Checked="Option_Checked"/>
-                <CheckBox Content="ACCESSIBILITY" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox Content="BOOST FIVEM" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox Content="SERVIÇOS EM BACKGROUND" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
-                <CheckBox Content="USB SELECTIVE SUSPEND" Style="{StaticResource OptionToggleStyle}" Checked="Option_Checked"/>
+                <CheckBox x:Name="RegistryVisual" Content="REGISTRO TECLADO" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="GameModeVisual" Content="MODO JOGO" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="AccessibilityVisual" Content="ACCESSIBILITY" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="FiveMBoostVisual" Content="BOOST FIVEM" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="BackgroundServicesVisual" Content="SERVIÇOS EM BACKGROUND" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
+                <CheckBox x:Name="UsbSelectiveSuspendVisual" Content="USB SELECTIVE SUSPEND" Style="{StaticResource OptionToggleStyle}" Click="Option_Click"/>
             </StackPanel>
         </Grid>
 
@@ -84,9 +84,7 @@
                         <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/redragon-fizz.png|Redragon|Fizz" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/anne-pro-2.png|Anne Pro|2" Click="Device_Click"/>
                         <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/keychron-k2.png|Keychron|K2" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Branding/secret-fix-logo.png|SteelSeries|Apex Pro" Click="Device_Click"/>
-                        <Button Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Branding/secret-fix-logo.png|Razer|Huntsman Mini" Click="Device_Click"/>
-                        <Button x:Name="KeyboardGeneric" Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Branding/secret-fix-logo.png|secret.fix|Generic Keyboard" Click="Device_Click"/>
+                        <Button x:Name="KeyboardGeneric" Style="{StaticResource DeviceButtonStyle}" Width="176" Tag="/Assets/Devices/Keyboards/generic-keyboard.png|secret.fix|Generic Keyboard" Click="Device_Click"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

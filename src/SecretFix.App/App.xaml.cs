@@ -17,7 +17,7 @@ public partial class App : Application
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
-        _singleInstanceMutex = new Mutex(true, "SecretFix.App.SingleInstance.v0.3", out var createdNew);
+        _singleInstanceMutex = new Mutex(true, "SecretFix.App.SingleInstance.v0.4", out var createdNew);
         if (!createdNew)
         {
             Shutdown();

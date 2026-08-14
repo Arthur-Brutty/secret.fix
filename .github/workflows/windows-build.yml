@@ -1,8 +1,8 @@
 name: Windows build
 
 env:
-  APP_VERSION: v0.3
-  ARTIFACT_NAME: secret-fix-v0.3-win-x64
+  APP_VERSION: v0.4
+  ARTIFACT_NAME: secret-fix-v0.4-win-x64
 
 on:
   push:
@@ -20,8 +20,12 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Restore
         run: dotnet restore src/SecretFix.App/SecretFix.App.csproj
+      - name: Restore tests
+        run: dotnet restore tests/SecretFix.Tests/SecretFix.Tests.csproj
       - name: Build
         run: dotnet build src/SecretFix.App/SecretFix.App.csproj -c Release --no-restore
+      - name: Test
+        run: dotnet test tests/SecretFix.Tests/SecretFix.Tests.csproj -c Release --no-restore
       - name: Publish self-contained app
         run: dotnet publish src/SecretFix.App/SecretFix.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/${{ env.ARTIFACT_NAME }}
       - name: Rename executable with version
