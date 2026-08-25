@@ -19,6 +19,11 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The workflow only builds the checked-out source; it never needs a
+          # credential that could be reused by a later command.
+          persist-credentials: false
+          fetch-depth: 1
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'

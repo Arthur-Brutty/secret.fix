@@ -107,6 +107,6 @@ Planned work includes a private production licensing backend, release code signi
 
 ## License
 
-Copyright © 2026 Arthur De Oliveira.
+Copyright (c) 2026 Arthur De Oliveira.
 
 This repository is publicly available for portfolio and technical review. Unauthorized commercial redistribution, resale, or incorporation of this source code into third-party commercial products is not permitted. See [LICENSE](LICENSE) for details.
