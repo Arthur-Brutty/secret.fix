@@ -4,25 +4,18 @@ namespace SecretFix.Services;
 
 public sealed class MockLicenseService : ILicenseService
 {
-    public const string DevUsername = "SecretUser_01";
-    public const string DevLicenseKey = "SF-APX-DEMO-8K2P";
+    public const string DevelopmentUsername = "LocalDeveloper";
 
     private LicenseInfo? _current;
 
     public Task<LicenseInfo> GetCurrentAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(_current ?? CreateLicense(DevUsername));
+        => Task.FromResult(_current ?? CreateLicense(DevelopmentUsername));
 
     public Task<LicenseInfo?> SignInAsync(string username, string licenseKey, CancellationToken cancellationToken = default)
     {
-        var normalizedUser = string.IsNullOrWhiteSpace(username) ? DevUsername : username.Trim();
-        var normalizedKey = licenseKey.Trim();
-
-        if (!string.Equals(normalizedKey, DevLicenseKey, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(normalizedKey, "APEX", StringComparison.OrdinalIgnoreCase))
-        {
-            return Task.FromResult<LicenseInfo?>(null);
-        }
-
+        // This is deliberately local-only. It demonstrates the client boundary without
+        // pretending that a production licensing backend or credential exists in the repo.
+        var normalizedUser = string.IsNullOrWhiteSpace(username) ? DevelopmentUsername : username.Trim();
         _current = CreateLicense(normalizedUser);
         return Task.FromResult<LicenseInfo?>(_current);
     }

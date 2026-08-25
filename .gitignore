@@ -4,6 +4,25 @@
 build/
 dist/
 artifacts/
+publish/
+
+# Local runtime data and diagnostics
+logs/
+backups/
+cache/
+.cache/
+temp/
+tmp/
+*.log
+*.dmp
+*.stackdump
+*.tmp
+*.temp
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
 
 # Windows binaries / packages
 *.exe
@@ -22,21 +41,27 @@ artifacts/
 .idea/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
 
 # Secrets / licensing data
 .env
 .env.*
+!.env.example
 secrets.json
 keys.json
 licenses.json
 *.key
 *.license
-
-# Local app data / logs / backups
-logs/
-backups/
-cache/
-*.log
+*.pem
+*.pfx
+*.p12
+credentials.json
+credentials.txt
+appsettings.local.json
+appsettings.*.local.json
+settings.local.json
+settings/*.local.json
 
 # OS
 Thumbs.db

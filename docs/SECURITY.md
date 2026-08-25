@@ -1,8 +1,8 @@
-# Segurança e privacidade
+# Security notes
 
-- Nunca commitar keys, tokens, credenciais, banco de licenças ou `.env`.
-- Licenças exibidas na UI devem ser mascaradas.
-- Não armazenar identificadores de dispositivo crus quando um hash/ID derivado for suficiente.
-- Alterações de sistema devem ser reversíveis.
-- Logs não devem conter segredos.
-- Não implementar bypass de anti-cheat, manipulação de memória do jogo, DLL injection ou evasão de regras de servidores.
+The repository-wide security policy is maintained in [SECURITY.md](../SECURITY.md). This historical documentation entry remains as a link so existing references continue to work.
+
+- Do not commit keys, tokens, credentials, license databases, or `.env` files.
+- UI licenses and logs use masked or redacted values.
+- Persistent system changes must be reversible.
+- The project does not implement anti-cheat bypasses, game-memory manipulation, or DLL injection.

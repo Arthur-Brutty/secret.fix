@@ -26,16 +26,16 @@ public partial class LoginWindow : Window
     {
         try
         {
-            StatusText.Text = "Validando sessao local...";
+            StatusText.Text = "Validando sessao de desenvolvimento local...";
             var license = await _licenseService.SignInAsync(UsernameBox.Text, LicenseBox.Password);
             if (license is null)
             {
-                _log.Info($"Login failed. User={UsernameBox.Text}; KeyLength={LicenseBox.Password.Length}");
-                StatusText.Text = "Credencial mock invalida.";
+                _log.Info("Local development mock sign-in was not accepted.");
+                StatusText.Text = "Sessao local indisponivel.";
                 return;
             }
 
-            _log.Info($"Login success. User={license.Username}; Plan={license.Plan}; KeyMasked={license.MaskedLicense}");
+            _log.Info($"Local development mock sign-in accepted. Plan={license.Plan}; License={license.MaskedLicense}");
             var main = new MainWindow(license, _licenseService);
             main.Show();
             Close();

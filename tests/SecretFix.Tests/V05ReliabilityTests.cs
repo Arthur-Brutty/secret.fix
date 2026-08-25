@@ -102,6 +102,16 @@ public sealed class V05ReliabilityTests
         Assert.Empty(settings.Current.Profiles.MouseByDevice);
     }
 
+    [Fact]
+    public void AppLogService_RedactsCredentialLikeValues()
+    {
+        const string sensitive = "value-that-must-not-appear";
+        var result = AppLogService.Redact("Authorization=Bearer " + sensitive + "; password=" + sensitive + "; LicenseKey=" + sensitive);
+
+        Assert.DoesNotContain(sensitive, result);
+        Assert.Contains("[REDACTED]", result);
+    }
+
     private sealed class TemporaryFolder : IDisposable
     {
         public TemporaryFolder()

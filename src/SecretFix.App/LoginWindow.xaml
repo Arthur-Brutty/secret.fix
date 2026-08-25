@@ -24,13 +24,13 @@
                         <TextBlock Text="v0.4 test build" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Center" Margin="0,6,0,26"/>
 
                         <TextBlock Text="USERNAME" Foreground="{StaticResource MutedBrush}" FontSize="11" FontWeight="SemiBold"/>
-                        <TextBox x:Name="UsernameBox" Height="38" Margin="0,8,0,16" Text="SecretUser_01"/>
+                        <TextBox x:Name="UsernameBox" Height="38" Margin="0,8,0,16"/>
 
                         <TextBlock Text="LICENSE KEY" Foreground="{StaticResource MutedBrush}" FontSize="11" FontWeight="SemiBold"/>
-                        <PasswordBox x:Name="LicenseBox" Height="38" Margin="0,8,0,18" Password="SF-APX-DEMO-8K2P"/>
+                        <PasswordBox x:Name="LicenseBox" Height="38" Margin="0,8,0,18"/>
 
                         <Button Content="ENTRAR" Style="{StaticResource PrimaryButtonStyle}" Click="SignIn_Click"/>
-                        <TextBlock x:Name="StatusText" Text="Mock local: SF-APX-DEMO-8K2P" Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,14,0,0"/>
+                        <TextBlock x:Name="StatusText" Text="Local-only development mock. No production authentication backend is included." Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,14,0,0"/>
                     </StackPanel>
                 </Border>
             </Grid>

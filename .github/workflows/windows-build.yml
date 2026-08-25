@@ -1,8 +1,11 @@
 name: Windows build
 
+permissions:
+  contents: read
+
 env:
-  APP_VERSION: v0.4
-  ARTIFACT_NAME: secret-fix-v0.4-win-x64
+  APP_VERSION: v0.5
+  ARTIFACT_NAME: secret-fix-v0.5-win-x64
 
 on:
   push:
@@ -13,6 +16,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -23,7 +27,7 @@ jobs:
       - name: Restore tests
         run: dotnet restore tests/SecretFix.Tests/SecretFix.Tests.csproj
       - name: Build
-        run: dotnet build src/SecretFix.App/SecretFix.App.csproj -c Release --no-restore
+        run: dotnet build SecretFix.sln -c Release --no-restore
       - name: Test
         run: dotnet test tests/SecretFix.Tests/SecretFix.Tests.csproj -c Release --no-restore
       - name: Publish self-contained app
