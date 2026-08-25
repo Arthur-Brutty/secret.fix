@@ -29,6 +29,10 @@ public sealed class BackupService
     public KeyboardSnapshot? LoadLatestKeyboard()
         => LoadLatest<KeyboardSnapshot>("keyboard");
 
+    public MouseSnapshot? LoadMouse(string path) => Load<MouseSnapshot>(path);
+
+    public KeyboardSnapshot? LoadKeyboard(string path) => Load<KeyboardSnapshot>(path);
+
     private string Save<T>(string prefix, T snapshot)
     {
         Directory.CreateDirectory(_folder);
@@ -63,5 +67,19 @@ public sealed class BackupService
         }
 
         return default;
+    }
+
+    private T? Load<T>(string path)
+    {
+        try
+        {
+            if (!File.Exists(path)) return default;
+            return JsonSerializer.Deserialize<T>(File.ReadAllText(path));
+        }
+        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        {
+            _log.Error($"Backup could not be read. Path={path}", ex);
+            return default;
+        }
     }
 }

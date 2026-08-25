@@ -4,7 +4,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using SecretFix.Core;
-using SecretFix.Infrastructure.Windows;
 using SecretFix.Services;
 using SecretFix.State;
 
@@ -12,20 +11,20 @@ namespace SecretFix.Views;
 
 public partial class MouseFixView : UserControl
 {
-    private readonly WindowsInputService _input = new();
     private readonly DeviceDetectionService _deviceDetection;
     private readonly BackupService _backup;
     private readonly AppLogService _log;
     private readonly SettingsService _settings;
-    private MouseSnapshot? _sessionSnapshot;
+    private readonly ProfileOperationService _profiles;
     private Button? _selectedDevice;
     private bool _isReady;
 
-    public MouseFixView(BackupService backup, AppLogService log, SettingsService settings)
+    public MouseFixView(BackupService backup, AppLogService log, SettingsService settings, OperationService operations)
     {
         _backup = backup;
         _log = log;
         _settings = settings;
+        _profiles = new ProfileOperationService(backup, operations, log);
         _deviceDetection = new DeviceDetectionService(log);
         InitializeComponent();
         BuildDeviceCards();
@@ -87,29 +86,18 @@ public partial class MouseFixView : UserControl
         }
     }
 
-    private void Apply_Click(object sender, RoutedEventArgs e)
+    private async void Apply_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            var before = _input.ReadMouse();
-            _sessionSnapshot ??= before;
-            var backupPath = _backup.SaveMouse(before);
-
-            if (MousePrecision.IsChecked == true)
-                _input.ApplyLinearMouse(10);
-
-            var after = _input.ReadMouse();
-            _log.Info($"MouseFix applied. Before={before}; After={after}; Backup={backupPath}");
-            NotificationService.Show($"MouseFix aplicado. Speed {after.Speed}, accel {after.Acceleration}.");
-        }
-        catch (Exception ex)
-        {
-            _log.Info($"MouseFix apply failed. Error={ex.Message}");
-            NotificationService.Show($"Falha ao aplicar MouseFix: {ex.Message}");
-        }
+        ApplyMouseButton.IsEnabled = false;
+        RestoreMouseButton.IsEnabled = false;
+        OperationText.Text = "APLICANDO\nSnapshot, backup, alteração e releitura em andamento.";
+        var result = await Task.Run(() => _profiles.ApplyMouse(CurrentProfile, _settings.Current.MouseFix));
+        OperationText.Text = $"{result.Status.ToDisplay()}\nANTES: {result.Before}\nDEPOIS: {result.After}\n{result.Message}";
+        ApplyMouseButton.IsEnabled = true;
+        RestoreMouseButton.IsEnabled = true;
     }
 
-    private void RestoreLatest_Click(object sender, RoutedEventArgs e)
+    private async void RestoreLatest_Click(object sender, RoutedEventArgs e)
     {
         var latest = _backup.LoadLatestMouse();
         if (latest is null)
@@ -118,7 +106,13 @@ public partial class MouseFixView : UserControl
             return;
         }
 
-        RestoreSnapshot(latest, "último backup");
+        ApplyMouseButton.IsEnabled = false;
+        RestoreMouseButton.IsEnabled = false;
+        OperationText.Text = "APLICANDO\nRestaurando backup e relendo o estado.";
+        var result = await Task.Run(() => _profiles.RestoreMouse(latest, "último backup"));
+        OperationText.Text = $"{result.Status.ToDisplay()}\nDEPOIS: {result.After}\n{result.Message}";
+        ApplyMouseButton.IsEnabled = true;
+        RestoreMouseButton.IsEnabled = true;
     }
 
     private void Device_Click(object sender, RoutedEventArgs e)
@@ -229,6 +223,7 @@ public partial class MouseFixView : UserControl
             ? new KnownDevice(DeviceKind.Mouse, parts[0], parts[1], "", "", "")
             : KnownDevices.GenericMouse;
         SelectMatchingDevice(known, automatic: false, persist: false);
+        SelectProfile(_settings.Current.Profiles.MouseByDevice.TryGetValue(state.SelectedDeviceId, out var profile) ? profile : _settings.Current.Profiles.MouseProfile);
         DetectedMouseText.Text = $"Seleção salva: {SelectedMouseText.Text}";
     }
 
@@ -253,20 +248,22 @@ public partial class MouseFixView : UserControl
         _settings.Save();
     }
 
-    private void RestoreSnapshot(MouseSnapshot snapshot, string source)
+    private OptimizationProfile CurrentProfile => Enum.TryParse<OptimizationProfile>((ProfilePicker.SelectedItem as ComboBoxItem)?.Tag?.ToString(), out var profile) ? profile : OptimizationProfile.Balanced;
+
+    private void SelectProfile(OptimizationProfile profile)
     {
-        try
-        {
-            _input.Restore(snapshot);
-            var after = _input.ReadMouse();
-            _log.Info($"MouseFix restored from {source}. Target={snapshot}; After={after}");
-            NotificationService.Show($"Mouse restaurado: speed {after.Speed}, accel {after.Acceleration}.");
-        }
-        catch (Exception ex)
-        {
-            _log.Info($"MouseFix restore failed. Source={source}; Error={ex.Message}");
-            NotificationService.Show($"Falha ao restaurar mouse: {ex.Message}");
-        }
+        ProfilePicker.SelectedIndex = profile switch { OptimizationProfile.Competitive => 1, OptimizationProfile.Custom => 2, _ => 0 };
+    }
+
+    private void ProfilePicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!_isReady) return;
+        var profile = CurrentProfile;
+        _settings.Current.Profiles.MouseProfile = profile;
+        _settings.Current.Profiles.MouseByDevice[_settings.Current.MouseFix.SelectedDeviceId] = profile;
+        _settings.Save();
+        var plan = ProfileCatalog.Get(profile);
+        OperationText.Text = $"NÃO APLICADO\n{string.Join(" · ", plan.MouseChanges.Select(change => change.Title))}\n{plan.MouseChanges.Count} alterações planejadas; nenhuma ação oculta.";
     }
 
     private void MousePrev_Click(object sender, RoutedEventArgs e) => MouseScroll.ScrollToHorizontalOffset(Math.Max(0, MouseScroll.HorizontalOffset - 330));

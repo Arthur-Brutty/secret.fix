@@ -7,8 +7,8 @@ public static class KnownDevices
 
     public static IReadOnlyList<KnownDevice> All { get; } =
     [
-        new(DeviceKind.Mouse, "Logitech", "G Pro X Superlight 2", "046D", "C09B", "/Assets/Devices/Mice/logitech-g-pro-x.png"),
-        new(DeviceKind.Mouse, "Razer", "Viper V3 Pro", "1532", "00B6", "/Assets/Devices/Mice/razer-viper-v3.png"),
+        new(DeviceKind.Mouse, "Logitech", "G Pro X Superlight 2", "046D", "C09B", "/Assets/Devices/Mice/logitech-g-pro-x.png", ["G PRO X SUPERLIGHT 2"]),
+        new(DeviceKind.Mouse, "Razer", "Viper V3 Pro", "1532", "00B6", "/Assets/Devices/Mice/razer-viper-v3.png", ["VIPER V3 PRO"]),
 
         new(DeviceKind.Keyboard, "Wooting", "60HE", "31E3", "1100", "/Assets/Devices/Keyboards/wooting-60he.png"),
         new(DeviceKind.Keyboard, "DrunkDeer", "A75", "3554", "F808", "/Assets/Devices/Keyboards/drunkdeer-a75.png"),

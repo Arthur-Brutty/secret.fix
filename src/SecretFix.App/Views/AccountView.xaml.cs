@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using SecretFix.Core;
+using SecretFix.Services;
 
 namespace SecretFix.Views;
 
@@ -8,7 +9,7 @@ public partial class AccountView : UserControl
     public event EventHandler? SignOutRequested;
     public event EventHandler? FullscreenRequested;
 
-    public AccountView(LicenseInfo license)
+    public AccountView(LicenseInfo license, OperationService operations)
     {
         InitializeComponent();
         UsernameText.Text = license.Username;
@@ -20,6 +21,10 @@ public partial class AccountView : UserControl
         StatusText.Text = license.Status;
         DeviceBindText.Text = $"{license.DeviceBindUsed} / {license.DeviceBindLimit}";
         SupportText.Text = license.SupportId;
+        BuildText.Text = $"{AppBuildInfo.BuildTimestamp} · commit {AppBuildInfo.Commit}";
+        var lastOperation = operations.LoadHistory().FirstOrDefault();
+        LastOptimizationText.Text = lastOperation is null ? "—" : $"{lastOperation.Timestamp.ToLocalTime():g} · {lastOperation.Module} · {lastOperation.Status.ToDisplay()}";
+        LastBackupText.Text = lastOperation?.BackupPath is null ? "—" : lastOperation.Timestamp.ToLocalTime().ToString("g");
     }
 
     private void SignOut_Click(object sender, System.Windows.RoutedEventArgs e) => SignOutRequested?.Invoke(this, EventArgs.Empty);

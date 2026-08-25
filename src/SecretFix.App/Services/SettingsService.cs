@@ -65,13 +65,19 @@ public sealed class SettingsService
     private static AppSettings Normalize(AppSettings? settings)
     {
         settings ??= new AppSettings();
-        settings.SchemaVersion = 2;
+        // Migrations are additive: older files deserialize with missing members and
+        // are completed below instead of being discarded.
+        settings.SchemaVersion = 5;
         settings.MouseFix ??= new MouseFixState();
         settings.KeyboardFix ??= new KeyboardFixState();
         settings.FiveM ??= new FiveMState();
         settings.Aim ??= new AimState();
         settings.Services ??= new ServicesState();
         settings.Display ??= new DisplayState();
+        settings.Profiles ??= new ProfileState();
+        settings.Profiles.MouseByDevice ??= new(StringComparer.OrdinalIgnoreCase);
+        settings.Profiles.KeyboardByDevice ??= new(StringComparer.OrdinalIgnoreCase);
+        settings.Benchmark ??= new BenchmarkState();
 
         if (string.IsNullOrWhiteSpace(settings.MouseFix.SelectedDeviceId))
             settings.MouseFix.SelectedDeviceId = "secret.fix|Generic";

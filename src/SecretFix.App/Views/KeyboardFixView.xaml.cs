@@ -4,7 +4,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using SecretFix.Core;
-using SecretFix.Infrastructure.Windows;
 using SecretFix.Services;
 using SecretFix.State;
 
@@ -12,22 +11,22 @@ namespace SecretFix.Views;
 
 public partial class KeyboardFixView : UserControl
 {
-    private readonly WindowsKeyboardService _keyboard = new();
     private readonly DeviceDetectionService _deviceDetection;
     private readonly BackupService _backup;
     private readonly AppLogService _log;
     private readonly SettingsService _settings;
+    private readonly ProfileOperationService _profiles;
     private readonly bool _allowed;
     private readonly PlanTier _minimumPlan;
-    private KeyboardSnapshot? _sessionSnapshot;
     private Button? _selectedDevice;
     private bool _isReady;
 
-    public KeyboardFixView(BackupService backup, AppLogService log, SettingsService settings, bool allowed, PlanTier minimumPlan)
+    public KeyboardFixView(BackupService backup, AppLogService log, SettingsService settings, OperationService operations, bool allowed, PlanTier minimumPlan)
     {
         _backup = backup;
         _log = log;
         _settings = settings;
+        _profiles = new ProfileOperationService(backup, operations, log);
         _allowed = allowed;
         _minimumPlan = minimumPlan;
         _deviceDetection = new DeviceDetectionService(log);
@@ -85,7 +84,7 @@ public partial class KeyboardFixView : UserControl
         }
     }
 
-    private void Apply_Click(object sender, RoutedEventArgs e)
+    private async void Apply_Click(object sender, RoutedEventArgs e)
     {
         if (!_allowed)
         {
@@ -93,31 +92,16 @@ public partial class KeyboardFixView : UserControl
             return;
         }
 
-        try
-        {
-            var before = _keyboard.ReadKeyboard();
-            _sessionSnapshot ??= before;
-            var backupPath = _backup.SaveKeyboard(before);
-
-            _keyboard.ApplyGamingProfile(
-                minimumDelay: MinimumDelay.IsChecked == true,
-                maximumRepeat: MaximumRepeat.IsChecked == true,
-                disableFilterKeys: FilterKeysOff.IsChecked == true,
-                disableStickyKeys: StickyKeysOff.IsChecked == true,
-                disableToggleKeys: ToggleKeysOff.IsChecked == true);
-
-            var after = _keyboard.ReadKeyboard();
-            _log.Info($"KeyboardFix applied. Before={before}; After={after}; Backup={backupPath}");
-            NotificationService.Show($"TecladoFix aplicado. Speed {after.Speed}, delay {after.Delay}.");
-        }
-        catch (Exception ex)
-        {
-            _log.Info($"KeyboardFix apply failed. Error={ex.Message}");
-            NotificationService.Show($"Falha ao aplicar TecladoFix: {ex.Message}");
-        }
+        ApplyKeyboardButton.IsEnabled = false;
+        RestoreKeyboardButton.IsEnabled = false;
+        OperationText.Text = "APLICANDO\nSnapshot, backup, alteração e releitura em andamento.";
+        var result = await Task.Run(() => _profiles.ApplyKeyboard(CurrentProfile, _settings.Current.KeyboardFix));
+        OperationText.Text = $"{result.Status.ToDisplay()}\nANTES: {result.Before}\nDEPOIS: {result.After}\n{result.Message}";
+        ApplyKeyboardButton.IsEnabled = true;
+        RestoreKeyboardButton.IsEnabled = true;
     }
 
-    private void RestoreLatest_Click(object sender, RoutedEventArgs e)
+    private async void RestoreLatest_Click(object sender, RoutedEventArgs e)
     {
         var latest = _backup.LoadLatestKeyboard();
         if (latest is null)
@@ -126,7 +110,13 @@ public partial class KeyboardFixView : UserControl
             return;
         }
 
-        RestoreSnapshot(latest, "último backup");
+        ApplyKeyboardButton.IsEnabled = false;
+        RestoreKeyboardButton.IsEnabled = false;
+        OperationText.Text = "APLICANDO\nRestaurando backup e relendo o estado.";
+        var result = await Task.Run(() => _profiles.RestoreKeyboard(latest, "último backup"));
+        OperationText.Text = $"{result.Status.ToDisplay()}\nDEPOIS: {result.After}\n{result.Message}";
+        ApplyKeyboardButton.IsEnabled = true;
+        RestoreKeyboardButton.IsEnabled = true;
     }
 
     private void Device_Click(object sender, RoutedEventArgs e)
@@ -237,6 +227,7 @@ public partial class KeyboardFixView : UserControl
             ? new KnownDevice(DeviceKind.Keyboard, parts[0], parts[1], "", "", "")
             : KnownDevices.GenericKeyboard;
         SelectMatchingDevice(known, automatic: false, persist: false);
+        SelectProfile(_settings.Current.Profiles.KeyboardByDevice.TryGetValue(state.SelectedDeviceId, out var profile) ? profile : _settings.Current.Profiles.KeyboardProfile);
         DetectedKeyboardText.Text = $"Seleção salva: {SelectedKeyboardText.Text}";
     }
 
@@ -261,20 +252,22 @@ public partial class KeyboardFixView : UserControl
         _settings.Save();
     }
 
-    private void RestoreSnapshot(KeyboardSnapshot snapshot, string source)
+    private OptimizationProfile CurrentProfile => Enum.TryParse<OptimizationProfile>((ProfilePicker.SelectedItem as ComboBoxItem)?.Tag?.ToString(), out var profile) ? profile : OptimizationProfile.Balanced;
+
+    private void SelectProfile(OptimizationProfile profile)
     {
-        try
-        {
-            _keyboard.Restore(snapshot);
-            var after = _keyboard.ReadKeyboard();
-            _log.Info($"KeyboardFix restored from {source}. Target={snapshot}; After={after}");
-            NotificationService.Show($"Teclado restaurado: speed {after.Speed}, delay {after.Delay}.");
-        }
-        catch (Exception ex)
-        {
-            _log.Info($"KeyboardFix restore failed. Source={source}; Error={ex.Message}");
-            NotificationService.Show($"Falha ao restaurar teclado: {ex.Message}");
-        }
+        ProfilePicker.SelectedIndex = profile switch { OptimizationProfile.Competitive => 1, OptimizationProfile.Custom => 2, _ => 0 };
+    }
+
+    private void ProfilePicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!_isReady) return;
+        var profile = CurrentProfile;
+        _settings.Current.Profiles.KeyboardProfile = profile;
+        _settings.Current.Profiles.KeyboardByDevice[_settings.Current.KeyboardFix.SelectedDeviceId] = profile;
+        _settings.Save();
+        var plan = ProfileCatalog.Get(profile);
+        OperationText.Text = $"NÃO APLICADO\n{string.Join(" · ", plan.KeyboardChanges.Select(change => change.Title))}\n{plan.KeyboardChanges.Count} alterações planejadas; nenhuma ação oculta.";
     }
 
     private void KeyboardPrev_Click(object sender, RoutedEventArgs e) => KeyboardScroll.ScrollToHorizontalOffset(Math.Max(0, KeyboardScroll.HorizontalOffset - 380));

@@ -16,6 +16,7 @@ public partial class MainWindow : Window
     private readonly BackupService _backup;
     private readonly AppLogService _log;
     private readonly SettingsService _settings;
+    private readonly OperationService _operations;
     private readonly ILicenseService _licenseService;
     private readonly LicenseInfo _license;
     private readonly Dictionary<string, UserControl> _views = new(StringComparer.OrdinalIgnoreCase);
@@ -30,6 +31,7 @@ public partial class MainWindow : Window
         _log = new AppLogService();
         _backup = new BackupService(_log);
         _settings = new SettingsService(_log);
+        _operations = new OperationService(_log);
         InitializeComponent();
         _license = license;
         _licenseService = licenseService;
@@ -42,12 +44,13 @@ public partial class MainWindow : Window
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
         StartBackgroundVideo();
-        _log.Info($"secret.fix start. Version=v0.4-test; User={_license.Username}; Plan={_license.Plan}; Status={_license.Status}");
+        _log.Info($"secret.fix start. Version={AppBuildInfo.InformationalVersion}; User={_license.Username}; Plan={_license.Plan}; Status={_license.Status}");
         UserText.Text = _license.Username;
         PlanText.Text = _license.Plan.ToString().ToUpperInvariant();
-        VersionText.Text = "v0.4 test build";
+        VersionText.Text = AppBuildInfo.InformationalVersion;
         ApplyFeatureGates();
         await RunSplashAsync();
+        ReportPendingOperation();
         Navigate("Mouse");
     }
 
@@ -56,6 +59,7 @@ public partial class MainWindow : Window
         NotificationService.Requested -= ShowToast;
         _settings.Save();
         CrosshairOverlayService.Close();
+        foreach (var view in _views.Values.OfType<IDisposable>()) view.Dispose();
         GalaxyBackground.Stop();
         base.OnClosed(e);
     }
@@ -146,14 +150,15 @@ public partial class MainWindow : Window
 
         UserControl view = page switch
         {
-            "Mouse" => new MouseFixView(_backup, _log, _settings),
-            "Keyboard" => new KeyboardFixView(_backup, _log, _settings, allowed, minimumPlan),
-            "FiveM" => new FiveMView(allowed, minimumPlan, _log, _settings),
+            "Mouse" => new MouseFixView(_backup, _log, _settings, _operations),
+            "Keyboard" => new KeyboardFixView(_backup, _log, _settings, _operations, allowed, minimumPlan),
+            "FiveM" => new FiveMView(allowed, minimumPlan, _log, _settings, _backup, _operations),
             "Flick" => new FlickTrainerView(allowed, minimumPlan),
             "Sensi" => new SensiView(_backup, _log, allowed, minimumPlan),
             "Aim" => new AimView(allowed, minimumPlan, _settings, _log),
             "Services" => new ServicesView(allowed, minimumPlan, _settings, _log),
             "Display" => new DisplayView(allowed, minimumPlan, _settings, _log),
+            "Diagnostics" => new DiagnosticsView(_settings, _backup, _operations, _log),
             "Account" => CreateAccountView(),
             _ => new PlaceholderView(page, minimumPlan, allowed)
         };
@@ -164,7 +169,7 @@ public partial class MainWindow : Window
 
     private AccountView CreateAccountView()
     {
-        var view = new AccountView(_license);
+        var view = new AccountView(_license, _operations);
         view.SignOutRequested += (_, _) => SignOut();
         view.FullscreenRequested += (_, _) => ToggleFullscreen();
         return view;
@@ -180,6 +185,7 @@ public partial class MainWindow : Window
         SetGate(AimBadge, FeatureId.Aim);
         SetGate(ServicesBadge, FeatureId.Services);
         SetGate(DisplayBadge, FeatureId.DisplayTuning);
+        SetGate(DiagnosticsBadge, FeatureId.Diagnostics);
     }
 
     private void SetGate(TextBlock badge, FeatureId feature)
@@ -212,6 +218,7 @@ public partial class MainWindow : Window
             "Aim" => AimButton,
             "Services" => ServicesButton,
             "Display" => DisplayButton,
+            "Diagnostics" => DiagnosticsButton,
             "Account" => AccountButton,
             _ => null
         };
@@ -315,6 +322,14 @@ public partial class MainWindow : Window
             ToggleFullscreen();
     }
 
+    private void ReportPendingOperation()
+    {
+        var pending = _operations.GetPending();
+        if (pending is null) return;
+        NotificationService.Show("Uma alteração anterior pode não ter sido concluída. Abra Diagnóstico para verificar, restaurar ou ignorar.");
+        _log.Info($"Pending operation detected at startup. Id={pending.Id}; Module={pending.Module}; Profile={pending.Profile}");
+    }
+
     private static FeatureId? FeatureForPage(string page) => page switch
     {
         "Mouse" => FeatureId.MouseFix,
@@ -325,6 +340,7 @@ public partial class MainWindow : Window
         "Aim" => FeatureId.Aim,
         "Services" => FeatureId.Services,
         "Display" => FeatureId.DisplayTuning,
+        "Diagnostics" => FeatureId.Diagnostics,
         _ => null
     };
 }

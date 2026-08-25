@@ -40,7 +40,7 @@
 
                         <StackPanel>
                             <TextBlock Text="secret.fix" FontSize="30" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}"/>
-                            <TextBlock x:Name="VersionText" Text="v0.4 test build" Style="{StaticResource CaptionTextStyle}" Margin="2,4,0,0"/>
+                            <TextBlock x:Name="VersionText" Text="v0.5-test" Style="{StaticResource CaptionTextStyle}" Margin="2,4,0,0"/>
                         </StackPanel>
 
                         <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="12" Margin="0,26,0,18">
@@ -63,6 +63,7 @@
                             <Button x:Name="AimButton" Style="{StaticResource NavButtonStyle}" Tag="Aim" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="O" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Mira" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="AimBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
                             <Button x:Name="ServicesButton" Style="{StaticResource NavButtonStyle}" Tag="Services" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="#" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Servicos" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="ServicesBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
                             <Button x:Name="DisplayButton" Style="{StaticResource NavButtonStyle}" Tag="Display" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="D" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Display" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="DisplayBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
+                            <Button x:Name="DiagnosticsButton" Style="{StaticResource NavButtonStyle}" Tag="Diagnostics" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="!" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Diagnóstico" FontSize="15" VerticalAlignment="Center"/><TextBlock x:Name="DiagnosticsBadge" Grid.Column="2" FontSize="10" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/></Grid></Button>
                             <Button x:Name="AccountButton" Style="{StaticResource NavButtonStyle}" Tag="Account" Click="Nav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="A" FontSize="13" VerticalAlignment="Center"/><TextBlock Grid.Column="1" Text="Account" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
                         </StackPanel>
 
@@ -119,7 +120,7 @@
                         <ScaleTransform x:Name="SplashScale" ScaleX="0.96" ScaleY="0.96"/>
                     </StackPanel.RenderTransform>
                     <TextBlock Text="secret.fix" FontSize="34" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                    <TextBlock Text="v0.4 test build" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock Text="v0.5-test" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                 </StackPanel>
             </Grid>
         </Grid>

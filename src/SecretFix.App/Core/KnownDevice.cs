@@ -6,4 +6,5 @@ public sealed record KnownDevice(
     string Model,
     string Vid,
     string Pid,
-    string AssetPath);
+    string AssetPath,
+    IReadOnlyList<string>? Aliases = null);

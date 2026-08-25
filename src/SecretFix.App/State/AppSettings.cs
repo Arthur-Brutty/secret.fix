@@ -2,13 +2,16 @@ namespace SecretFix.State;
 
 public sealed class AppSettings
 {
-    public int SchemaVersion { get; set; } = 2;
+    // v0.5 introduced persisted profiles and before/after benchmark records.
+    public int SchemaVersion { get; set; } = 5;
     public MouseFixState MouseFix { get; set; } = new();
     public KeyboardFixState KeyboardFix { get; set; } = new();
     public FiveMState FiveM { get; set; } = new();
     public AimState Aim { get; set; } = new();
     public ServicesState Services { get; set; } = new();
     public DisplayState Display { get; set; } = new();
+    public ProfileState Profiles { get; set; } = new();
+    public BenchmarkState Benchmark { get; set; } = new();
 }
 
 public sealed class MouseFixState
@@ -48,6 +51,41 @@ public sealed class KeyboardFixState
 public sealed class FiveMState
 {
     public string? ExecutablePath { get; set; }
+    public bool PrepareBeforePlay { get; set; } = true;
+}
+
+public sealed class ProfileState
+{
+    public OptimizationProfile MouseProfile { get; set; } = OptimizationProfile.Balanced;
+    public OptimizationProfile KeyboardProfile { get; set; } = OptimizationProfile.Balanced;
+    public Dictionary<string, OptimizationProfile> MouseByDevice { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, OptimizationProfile> KeyboardByDevice { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+}
+
+public enum OptimizationProfile
+{
+    Balanced,
+    Competitive,
+    Custom
+}
+
+public sealed class BenchmarkState
+{
+    public InputBenchmarkState? Before { get; set; }
+    public InputBenchmarkState? After { get; set; }
+}
+
+public sealed class InputBenchmarkState
+{
+    public DateTimeOffset CapturedAt { get; set; }
+    public int EventCount { get; set; }
+    public double DurationMs { get; set; }
+    public double? AverageIntervalMs { get; set; }
+    public double? MinimumIntervalMs { get; set; }
+    public double? MaximumIntervalMs { get; set; }
+    public double? JitterMs { get; set; }
+    public double? EstimatedPollingHz { get; set; }
+    public double? StabilityPercent { get; set; }
 }
 
 public enum AimPreset

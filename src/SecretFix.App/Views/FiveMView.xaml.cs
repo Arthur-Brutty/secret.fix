@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using SecretFix.Core;
 using SecretFix.Services;
+using SecretFix.State;
 
 namespace SecretFix.Views;
 
@@ -14,14 +15,16 @@ public partial class FiveMView : UserControl
     private readonly AppLogService _log;
     private readonly SettingsService _settings;
     private readonly FiveMService _fiveM;
+    private readonly ProfileOperationService _profiles;
 
-    public FiveMView(bool allowed, PlanTier minimumPlan, AppLogService log, SettingsService settings)
+    public FiveMView(bool allowed, PlanTier minimumPlan, AppLogService log, SettingsService settings, BackupService backup, OperationService operations)
     {
         _allowed = allowed;
         _minimumPlan = minimumPlan;
         _log = log;
         _settings = settings;
         _fiveM = new FiveMService(log);
+        _profiles = new ProfileOperationService(backup, operations, log);
         InitializeComponent();
         PlanText.Text = allowed ? "Disponível (PULSE+)" : $"{minimumPlan.ToString().ToUpperInvariant()}+ ONLY";
         Detect();
@@ -33,6 +36,7 @@ public partial class FiveMView : UserControl
         if (process is not null)
         {
             ProcessText.Text = $"{process.ProcessName} · PID {process.ProcessId}";
+            StartedText.Text = ReadStartTime(process.ProcessId);
             StatusText.Text = "FiveM encontrado em execução.";
             if (FiveMService.IsValidExecutable(process.ExecutablePath))
                 SavePath(process.ExecutablePath!);
@@ -43,6 +47,7 @@ public partial class FiveMView : UserControl
         }
 
         ProcessText.Text = "Offline";
+        StartedText.Text = "—";
         var path = _fiveM.FindExecutable(_settings.Current.FiveM.ExecutablePath);
         if (path is null)
         {
@@ -99,6 +104,28 @@ public partial class FiveMView : UserControl
         NotificationService.Show("FiveM iniciado.");
         await Task.Delay(1200);
         Detect();
+    }
+
+    private async void PreparePlay_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_allowed) { NotificationService.Show($"Preparar e jogar requer {_minimumPlan.ToString().ToUpperInvariant()}+."); return; }
+        if (_fiveM.FindRunningProcess() is not null) { StatusText.Text = "FiveM já está aberto; nenhuma nova instância foi criada."; Detect(); return; }
+        StatusText.Text = "Preparando perfis seguros: backup, aplicação e verificação...";
+        var mouse = await Task.Run(() => _profiles.ApplyMouse(_settings.Current.Profiles.MouseProfile, _settings.Current.MouseFix));
+        var keyboard = await Task.Run(() => _profiles.ApplyKeyboard(_settings.Current.Profiles.KeyboardProfile, _settings.Current.KeyboardFix));
+        if (mouse.Status == ChangeStatus.Failed || keyboard.Status == ChangeStatus.Failed)
+        {
+            StatusText.Text = $"Preparação interrompida. Mouse: {mouse.Status.ToDisplay()} · Teclado: {keyboard.Status.ToDisplay()}. FiveM não foi iniciado.";
+            return;
+        }
+        _log.Info($"FiveM prepare completed. Mouse={mouse.Status}; Keyboard={keyboard.Status}");
+        Play_Click(sender, e);
+    }
+
+    private static string ReadStartTime(int processId)
+    {
+        try { using var process = System.Diagnostics.Process.GetProcessById(processId); return process.StartTime.ToLocalTime().ToString("g"); }
+        catch (Exception) { return "Não disponível"; }
     }
 
     private void Locate_Click(object sender, RoutedEventArgs e)

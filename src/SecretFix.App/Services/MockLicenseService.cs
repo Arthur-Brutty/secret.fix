@@ -36,7 +36,7 @@ public sealed class MockLicenseService : ILicenseService
             Plan: PlanTier.Apex,
             Expiration: null,
             Device: Environment.MachineName,
-            AppVersion: "v0.4",
+            AppVersion: AppBuildInfo.InformationalVersion,
             Status: "ACTIVE",
             DeviceBindUsed: 1,
             DeviceBindLimit: 1,

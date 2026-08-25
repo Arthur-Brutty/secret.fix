@@ -15,6 +15,7 @@
                 <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                     <TextBlock x:Name="DetectedMouseText" Text="Deteccao: aguardando..." Foreground="{StaticResource MutedBrush}" FontSize="12" VerticalAlignment="Center"/>
                     <Button x:Name="DetectMouseButton" Content="DETECTAR NOVAMENTE" Style="{StaticResource SecondaryButtonStyle}" Height="30" Padding="12,4" Margin="14,0,0,0" Click="DetectAgain_Click"/>
+                    <ComboBox x:Name="ProfilePicker" Width="132" Height="30" Margin="10,0,0,0" SelectionChanged="ProfilePicker_SelectionChanged"><ComboBoxItem Tag="Balanced">BALANCED</ComboBoxItem><ComboBoxItem Tag="Competitive">COMPETITIVE</ComboBoxItem><ComboBoxItem Tag="Custom">CUSTOM</ComboBoxItem></ComboBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -47,6 +48,7 @@
                            Stretch="Uniform"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock x:Name="SelectedMouseText" Text="Logitech G Pro X Superlight 2" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock x:Name="OperationText" Text="NÃO APLICADO · selecione um perfil para ver e aplicar alterações verificáveis." Foreground="{StaticResource MutedBrush}" FontSize="11" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="390" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                 </StackPanel>
                 <Border Width="280" Height="34" Background="#661B060A" CornerRadius="140,140,0,0" Opacity="0.75" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,24"/>
             </Grid>
