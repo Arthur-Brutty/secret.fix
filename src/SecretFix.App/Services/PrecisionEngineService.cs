@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json;
 using SecretFix.Core;
 using SecretFix.Infrastructure.Windows;

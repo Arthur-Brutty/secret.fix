@@ -45,9 +45,9 @@ public static class InputConsistencyAnalyzer
         var median = Percentile(values, .50);
         var largeGaps = values.Count(value => value >= LargeGapThresholdMs);
         var outliers = values.Count(value => value > median + Math.Max(0.25d, 3d * stdDev));
-        var observedRate = duration.TotalSeconds > 0 ? eventCount / duration.TotalSeconds : null;
-        var estimatedEventFrequency = mean > 0 ? 1000d / mean : null;
-        var stability = mean > 0 ? Math.Clamp(100d - (stdDev / mean * 100d) - (largeGaps * 2d), 0d, 100d) : null;
+        double? observedRate = duration.TotalSeconds > 0 ? eventCount / duration.TotalSeconds : null;
+        double? estimatedEventFrequency = mean > 0 ? 1000d / mean : null;
+        double? stability = mean > 0 ? Math.Clamp(100d - (stdDev / mean * 100d) - (largeGaps * 2d), 0d, 100d) : null;
 
         return new InputBenchmarkResult(eventCount, duration, mean, values[0], values[^1], stdDev, estimatedEventFrequency, stability, values)
         {
