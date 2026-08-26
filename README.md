@@ -14,7 +14,8 @@ The project explores a practical desktop-tool problem: exposing Windows input co
 
 - Mouse and keyboard profiles backed by documented Windows settings APIs.
 - HID-based device discovery with known VID/PID matching and generic fallbacks.
-- Raw Input capture that measures event intervals, estimated polling frequency, jitter, and stability indicators.
+- Raw Input v2 capture separated by `hDevice`, with observed event cadence, median, P95/P99, standard deviation, gaps, outliers, quality classification, and local JSON export.
+- Evidence-based precision engine: documented Windows Pointer profile, configuration-drift checks, a rejected-tweak catalog, and manual-only FiveM input guidance.
 - Input diagnostics, operation history, local JSON persistence, and backup/restore flows.
 - A conservative FiveM launcher that locates or starts the installed executable; it does not inject code, modify game memory, or bypass anti-cheat.
 - WPF/XAML UI with feature gating for the CORE, PULSE, and APEX product concepts.
@@ -33,7 +34,7 @@ The application keeps presentation, service orchestration, local state, and Wind
 
 ## Precision Engine and diagnostics
 
-The input benchmark measures timing between Raw Input mouse events. It is an input-event measurement tool, not an end-to-end latency meter, and it does not claim latency improvements without a measurement. Diagnostics expose detected devices and the current Windows input state where it can be read safely.
+The input benchmark uses `Stopwatch`/QPC timing between Raw Input mouse events and keeps devices separated by `hDevice`. It reports observed Windows event cadence, not configured USB firmware polling rate or end-to-end latency. Diagnostics expose detected devices, the current Windows pointer state, profile drift, and backup availability where they can be read safely.
 
 ## Windows and FiveM integration
 

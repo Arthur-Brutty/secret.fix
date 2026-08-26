@@ -38,7 +38,7 @@ public sealed class PersistenceAndBackupTests
         var service = new SettingsService(new AppLogService(Path.Combine(scope.Path, "logs")), path);
 
         Assert.NotNull(service.Current);
-        Assert.Equal(5, service.Current.SchemaVersion);
+        Assert.Equal(6, service.Current.SchemaVersion);
     }
 
     [Fact]

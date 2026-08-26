@@ -39,6 +39,22 @@
                     <Border Style="{StaticResource CardBorderStyle}" Padding="16" Margin="0,0,12,12"><StackPanel><TextBlock Text="CACHE" FontWeight="SemiBold"/><TextBlock Text="Limpeza segura será adicionada com backup." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,0"/><Button Content="EXPERIMENTAL · INDISPONÍVEL" Style="{StaticResource SecondaryButtonStyle}" Margin="0,14,0,0" IsEnabled="False"/></StackPanel></Border>
                     <Border Style="{StaticResource CardBorderStyle}" Padding="16" Margin="0,0,0,12"><StackPanel><TextBlock Text="RESTORE" FontWeight="SemiBold"/><TextBlock Text="Acesse os snapshots locais do secret.fix." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,0"/><Button Content="ABRIR BACKUPS" Style="{StaticResource SecondaryButtonStyle}" Margin="0,14,0,0" Click="OpenBackups_Click"/></StackPanel></Border>
                 </UniformGrid>
+                <Border Style="{StaticResource CardBorderStyle}" Padding="16" Margin="0,4,0,0">
+                    <StackPanel>
+                        <TextBlock Text="FIVEM INPUT ADVISOR" FontWeight="SemiBold"/>
+                        <TextBlock Text="MANUAL / NOT AUTO-DETECTED — settings are never read from or injected into FiveM." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,12"/>
+                        <UniformGrid Columns="3">
+                            <StackPanel Margin="0,0,12,8"><TextBlock Text="Mouse Input Method" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="InputMethodBox"/></StackPanel>
+                            <StackPanel Margin="0,0,12,8"><TextBlock Text="Mouse Look Sensitivity" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="MouseLookBox"/></StackPanel>
+                            <StackPanel Margin="0,0,12,8"><TextBlock Text="Driving Sensitivity" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="DrivingBox"/></StackPanel>
+                            <StackPanel Margin="0,0,12,8"><TextBlock Text="Plane Sensitivity" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="PlaneBox"/></StackPanel>
+                            <StackPanel Margin="0,0,12,8"><TextBlock Text="Helicopter Sensitivity" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="HelicopterBox"/></StackPanel>
+                            <StackPanel Margin="0,0,12,8"><TextBlock Text="Mouse Smoothing Scale" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="SmoothingBox"/></StackPanel>
+                        </UniformGrid>
+                        <TextBlock Text="Fine Aiming Control / Submarine Sensitivity can be recorded in notes. These values are guidance only." Foreground="{StaticResource MutedBrush}" Margin="0,4,0,8"/>
+                        <Button Content="SAVE MANUAL INPUT NOTES" Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Left" Click="SaveAdvisor_Click"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </ScrollViewer>
     </Grid>

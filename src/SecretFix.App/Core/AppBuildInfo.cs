@@ -8,7 +8,7 @@ public static class AppBuildInfo
     private static readonly Assembly Assembly = typeof(AppBuildInfo).Assembly;
 
     public static string InformationalVersion =>
-        Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "v0.5-test";
+        Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "v0.6-test";
 
     public static string BuildTimestamp
     {

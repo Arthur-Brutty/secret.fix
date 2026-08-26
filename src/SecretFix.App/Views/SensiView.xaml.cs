@@ -59,8 +59,9 @@ public partial class SensiView : UserControl
             var backupPath = _backup.SaveMouse(before);
             _input.ApplyLinearMouse((int)SpeedSlider.Value);
             var after = _input.ReadMouse();
-            _log.Info($"Sensi applied. Before={before}; After={after}; Backup={backupPath}");
-            NotificationService.Show($"Sensi aplicada: valor {after.Speed}.");
+            var verified = after.Speed == (int)SpeedSlider.Value && (!DisableAcceleration.IsChecked.GetValueOrDefault() || (after.Acceleration == 0 && after.Threshold1 == 0 && after.Threshold2 == 0));
+            _log.Info($"Sensi operation. Before={before}; After={after}; Backup={backupPath}; Verified={verified}");
+            NotificationService.Show(verified ? $"Sensi verificada: valor {after.Speed}." : "Sensi NÃO VERIFICADA: o estado relido não corresponde ao solicitado.");
         }
         catch (Exception ex)
         {

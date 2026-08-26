@@ -67,7 +67,7 @@ public sealed class SettingsService
         settings ??= new AppSettings();
         // Migrations are additive: older files deserialize with missing members and
         // are completed below instead of being discarded.
-        settings.SchemaVersion = 5;
+        settings.SchemaVersion = 6;
         settings.MouseFix ??= new MouseFixState();
         settings.KeyboardFix ??= new KeyboardFixState();
         settings.FiveM ??= new FiveMState();
@@ -78,6 +78,9 @@ public sealed class SettingsService
         settings.Profiles.MouseByDevice ??= new(StringComparer.OrdinalIgnoreCase);
         settings.Profiles.KeyboardByDevice ??= new(StringComparer.OrdinalIgnoreCase);
         settings.Benchmark ??= new BenchmarkState();
+        settings.Precision ??= new PrecisionState();
+        if (settings.Precision.MouseDpi is < 1 or > 100000)
+            settings.Precision.MouseDpi = null;
 
         if (string.IsNullOrWhiteSpace(settings.MouseFix.SelectedDeviceId))
             settings.MouseFix.SelectedDeviceId = "secret.fix|Generic";

@@ -4,8 +4,8 @@ permissions:
   contents: read
 
 env:
-  APP_VERSION: v0.5
-  ARTIFACT_NAME: secret-fix-v0.5-win-x64
+  APP_VERSION: v0.6
+  ARTIFACT_NAME: secret-test-v0.6-win-x64
 
 on:
   push:
@@ -37,14 +37,11 @@ jobs:
         run: dotnet test tests/SecretFix.Tests/SecretFix.Tests.csproj -c Release --no-restore
       - name: Publish self-contained app
         run: dotnet publish src/SecretFix.App/SecretFix.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/${{ env.ARTIFACT_NAME }}
-      - name: Rename executable with version
-        shell: pwsh
-        run: Rename-Item -Path "artifacts/${{ env.ARTIFACT_NAME }}/SecretFix.exe" -NewName "secret-fix-${{ env.APP_VERSION }}.exe"
       - name: Verify artifact contents
         shell: pwsh
         run: |
           Get-ChildItem -Recurse "artifacts/${{ env.ARTIFACT_NAME }}" | Select-Object FullName, Length
-          if (-not (Test-Path "artifacts/${{ env.ARTIFACT_NAME }}/secret-fix-${{ env.APP_VERSION }}.exe")) { throw "Versioned executable missing" }
+          if (-not (Test-Path "artifacts/${{ env.ARTIFACT_NAME }}/secret.test-${{ env.APP_VERSION }}.exe")) { throw "Versioned executable missing" }
           if (-not (Test-Path "artifacts/${{ env.ARTIFACT_NAME }}/Assets/Backgrounds/red-galaxy.mp4")) { throw "Background video missing from artifact" }
           if (-not (Test-Path "artifacts/${{ env.ARTIFACT_NAME }}/Assets/Devices/Mice/logitech-g-pro-x.png")) { throw "Mouse assets missing from artifact" }
           if (-not (Test-Path "artifacts/${{ env.ARTIFACT_NAME }}/Assets/Devices/Keyboards/wooting-60he.png")) { throw "Keyboard assets missing from artifact" }

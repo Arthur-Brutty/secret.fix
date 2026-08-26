@@ -88,7 +88,7 @@ public sealed class V05ReliabilityTests
     }
 
     [Fact]
-    public void SettingsService_MigratesV04FileToV05WithNewState()
+    public void SettingsService_MigratesV04FileToV06WithNewState()
     {
         using var scope = new TemporaryFolder();
         var path = Path.Combine(scope.Path, "settings.json");
@@ -96,9 +96,10 @@ public sealed class V05ReliabilityTests
 
         var settings = new SettingsService(new AppLogService(Path.Combine(scope.Path, "logs")), path);
 
-        Assert.Equal(5, settings.Current.SchemaVersion);
+        Assert.Equal(6, settings.Current.SchemaVersion);
         Assert.NotNull(settings.Current.Profiles);
         Assert.NotNull(settings.Current.Benchmark);
+        Assert.NotNull(settings.Current.Precision);
         Assert.Empty(settings.Current.Profiles.MouseByDevice);
     }
 

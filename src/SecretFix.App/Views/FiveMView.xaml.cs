@@ -26,8 +26,33 @@ public partial class FiveMView : UserControl
         _fiveM = new FiveMService(log);
         _profiles = new ProfileOperationService(backup, operations, log);
         InitializeComponent();
+        LoadAdvisor();
         PlanText.Text = allowed ? "Disponível (PULSE+)" : $"{minimumPlan.ToString().ToUpperInvariant()}+ ONLY";
         Detect();
+    }
+
+    private void LoadAdvisor()
+    {
+        var advisor = _settings.Current.Precision;
+        InputMethodBox.Text = advisor.FiveMMouseInputMethod;
+        MouseLookBox.Text = advisor.FiveMMouseLookSensitivity;
+        DrivingBox.Text = advisor.FiveMDrivingSensitivity;
+        PlaneBox.Text = advisor.FiveMPlaneSensitivity;
+        HelicopterBox.Text = advisor.FiveMHelicopterSensitivity;
+        SmoothingBox.Text = advisor.FiveMMouseSmoothingScale;
+    }
+
+    private void SaveAdvisor_Click(object sender, RoutedEventArgs e)
+    {
+        var advisor = _settings.Current.Precision;
+        advisor.FiveMMouseInputMethod = InputMethodBox.Text?.Trim();
+        advisor.FiveMMouseLookSensitivity = MouseLookBox.Text?.Trim();
+        advisor.FiveMDrivingSensitivity = DrivingBox.Text?.Trim();
+        advisor.FiveMPlaneSensitivity = PlaneBox.Text?.Trim();
+        advisor.FiveMHelicopterSensitivity = HelicopterBox.Text?.Trim();
+        advisor.FiveMMouseSmoothingScale = SmoothingBox.Text?.Trim();
+        if (_settings.Save()) NotificationService.Show("Manual FiveM input guidance saved locally.");
+        else NotificationService.Show("FiveM guidance could not be saved.");
     }
 
     private void Detect()

@@ -2,8 +2,8 @@ namespace SecretFix.State;
 
 public sealed class AppSettings
 {
-    // v0.5 introduced persisted profiles and before/after benchmark records.
-    public int SchemaVersion { get; set; } = 5;
+    // v0.6 adds precision diagnostics additively; v0.5 fields remain supported.
+    public int SchemaVersion { get; set; } = 6;
     public MouseFixState MouseFix { get; set; } = new();
     public KeyboardFixState KeyboardFix { get; set; } = new();
     public FiveMState FiveM { get; set; } = new();
@@ -12,6 +12,7 @@ public sealed class AppSettings
     public DisplayState Display { get; set; } = new();
     public ProfileState Profiles { get; set; } = new();
     public BenchmarkState Benchmark { get; set; } = new();
+    public PrecisionState Precision { get; set; } = new();
 }
 
 public sealed class MouseFixState
@@ -77,6 +78,8 @@ public sealed class BenchmarkState
 
 public sealed class InputBenchmarkState
 {
+    public int AnalyzerVersion { get; set; } = 1;
+    public string Device { get; set; } = "Generic HID Device";
     public DateTimeOffset CapturedAt { get; set; }
     public int EventCount { get; set; }
     public double DurationMs { get; set; }
@@ -86,6 +89,26 @@ public sealed class InputBenchmarkState
     public double? JitterMs { get; set; }
     public double? EstimatedPollingHz { get; set; }
     public double? StabilityPercent { get; set; }
+    public double? MedianIntervalMs { get; set; }
+    public double? P95IntervalMs { get; set; }
+    public double? P99IntervalMs { get; set; }
+    public int OutlierCount { get; set; }
+    public int LargeGapCount { get; set; }
+    public string SampleQuality { get; set; } = "INSUFFICIENT";
+}
+
+public sealed class PrecisionState
+{
+    public int? MouseDpi { get; set; }
+    public string? FiveMMouseInputMethod { get; set; }
+    public string? FiveMMouseLookSensitivity { get; set; }
+    public string? FiveMDrivingSensitivity { get; set; }
+    public string? FiveMPlaneSensitivity { get; set; }
+    public string? FiveMHelicopterSensitivity { get; set; }
+    public string? FiveMSubmarineSensitivity { get; set; }
+    public string? FiveMMouseSmoothingScale { get; set; }
+    public string? FiveMFineAimingControl { get; set; }
+    public string Notes { get; set; } = string.Empty;
 }
 
 public enum AimPreset

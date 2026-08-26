@@ -54,7 +54,7 @@ public sealed class ProfileOperationService
             _mouse.ApplyLinearMouse(profile == OptimizationProfile.Competitive ? 10 : before.Speed);
             var after = _mouse.ReadMouse();
             var verified = after.Acceleration == 0 && after.Threshold1 == 0 && after.Threshold2 == 0 && (profile != OptimizationProfile.Competitive || after.Speed == 10);
-            var status = verified ? ChangeStatus.Verified : ChangeStatus.Applied;
+            var status = verified ? ChangeStatus.Verified : ChangeStatus.NotVerified;
             var message = verified ? "Estado relido e confirmado." : "Alteração aplicada, mas não foi possível confirmar todos os valores.";
             _operations.Complete(pending, status, 3, message);
             _log.Info($"Mouse profile applied. Profile={profile}; Before={before}; After={after}; Verified={verified}");
@@ -96,7 +96,7 @@ public sealed class ProfileOperationService
             _keyboard.ApplyGamingProfile(minimumDelay, maximumRepeat, filter, sticky, toggle);
             var after = _keyboard.ReadKeyboard();
             var verified = (!minimumDelay || after.Delay == 0) && (!maximumRepeat || after.Speed == 31) && (!filter || !after.FilterKeysEnabled) && (!sticky || !after.StickyKeysEnabled) && (!toggle || !after.ToggleKeysEnabled);
-            var status = verified ? ChangeStatus.Verified : ChangeStatus.Applied;
+            var status = verified ? ChangeStatus.Verified : ChangeStatus.NotVerified;
             var message = verified ? "Estado relido e confirmado." : "Alteração aplicada, mas não foi possível confirmar todos os valores.";
             var count = new[] { minimumDelay, maximumRepeat, filter, sticky, toggle }.Count(value => value);
             _operations.Complete(pending, status, count, message);
@@ -130,7 +130,7 @@ public sealed class ProfileOperationService
             _mouse.Restore(snapshot);
             var after = _mouse.ReadMouse();
             var verified = after == snapshot;
-            var status = verified ? ChangeStatus.Restored : ChangeStatus.Applied;
+            var status = verified ? ChangeStatus.Restored : ChangeStatus.NotVerified;
             _operations.Complete(pending, status, 1, $"Restore from {source}. Verified={verified}");
             return new(status, "Backup selecionado", Describe(after), backup, 1, verified ? "Estado restaurado e confirmado." : "Restauração aplicada, mas não foi possível confirmar.");
         }
@@ -156,7 +156,7 @@ public sealed class ProfileOperationService
             _keyboard.Restore(snapshot);
             var after = _keyboard.ReadKeyboard();
             var verified = after == snapshot;
-            var status = verified ? ChangeStatus.Restored : ChangeStatus.Applied;
+            var status = verified ? ChangeStatus.Restored : ChangeStatus.NotVerified;
             _operations.Complete(pending, status, 1, $"Restore from {source}. Verified={verified}");
             return new(status, "Backup selecionado", Describe(after), backup, 1, verified ? "Estado restaurado e confirmado." : "Restauração aplicada, mas não foi possível confirmar.");
         }

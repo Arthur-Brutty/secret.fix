@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.6-test — Evidence-Based Precision Engine
+
+### Added
+
+- Raw Input v2 capture with `WM_INPUT`, `RIDEV_DEVNOTIFY`, per-`hDevice` isolation, hotplug-safe notification, QPC/`Stopwatch` timestamps, and raw device paths when available.
+- Testable Input Consistency Analyzer v1: mean, median, standard deviation/jitter, P95, P99, outliers, large gaps, stability score, and sample quality.
+- Precision Health and Configuration Drift visibility for the documented Windows Pointer profile.
+- Local benchmark JSON export with analyzer version and no unnecessary sensitive data.
+- FiveM Input Advisor that saves manually supplied values only; it does not inject, inspect game memory, or alter FiveM settings.
+- USB/HID diagnostics and a transparent Evidence Catalog, including rejected unsafe/placebo tweaks.
+
+### Safety
+
+- Automatic profiles contain only documented, reversible Windows pointer/keyboard settings.
+- Realtime priority, BCD/HPET timer hacks, USB polling boosters, global USB suspend changes, security disabling, and automatic FiveM cache purges remain rejected.
+- A result is marked `NOT VERIFIED` when a required reread does not match the expected state.
+
 ## v0.4 — estabilidade e funções reais
 
 ### Implementado

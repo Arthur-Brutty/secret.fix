@@ -2,8 +2,8 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $project = Join-Path $repoRoot "src/SecretFix.App/SecretFix.App.csproj"
-$version = "v0.5"
-$output = Join-Path $repoRoot "artifacts/secret-fix-$version-win-x64"
+$version = "v0.6"
+$output = Join-Path $repoRoot "artifacts/secret-test-$version-win-x64"
 
 & dotnet restore $project -r win-x64
 if ($LASTEXITCODE -ne 0) { throw "dotnet restore failed with exit code $LASTEXITCODE" }
@@ -12,13 +12,7 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet restore failed with exit code $LASTEXIT
     -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o $output
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
 
-$publishedExe = Join-Path $output "SecretFix.exe"
+$publishedExe = Join-Path $output "secret.test-v0.6.exe"
 if (-not (Test-Path -LiteralPath $publishedExe)) {
     throw "Published executable was not produced: $publishedExe"
 }
-
-$versionedExe = Join-Path $output "secret-fix-$version.exe"
-if (Test-Path -LiteralPath $versionedExe) {
-    Remove-Item -LiteralPath $versionedExe -Force
-}
-Rename-Item -LiteralPath $publishedExe -NewName (Split-Path -Leaf $versionedExe)
